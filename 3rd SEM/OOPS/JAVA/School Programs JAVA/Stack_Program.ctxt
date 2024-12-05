@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Stack_Program
+comment1.params=stack
+comment1.target=void\ stack_push(java.util.Stack)
+comment2.params=stack
+comment2.target=void\ stack_pop(java.util.Stack)
+comment3.params=stack
+comment3.target=void\ stack_peek(java.util.Stack)
+comment4.params=stack\ element
+comment4.target=void\ stack_search(java.util.Stack,\ int)
+comment5.params=args
+comment5.target=void\ main(java.lang.String[])
+numComments=6

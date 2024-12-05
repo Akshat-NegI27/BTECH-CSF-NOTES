@@ -1,0 +1,94 @@
+#include <GL/freeglut.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+// Global Variables
+std::vector<int> x_coords;
+std::vector<int> y_coords;
+int edges;
+
+// Function to draw a line between two points
+void drawLine(int x1, int y1, int x2, int y2) {
+    glBegin(GL_LINES);
+    glVertex2i(x1, y1);
+    glVertex2i(x2, y2);
+    glEnd();
+    glFlush();
+}
+
+// Function to implement scan-line polygon filling
+void scanFill() 
+{
+    int i, j, temp;
+    int xmin = *std::min_element(x_coords.begin(), x_coords.end());
+    int xmax = *std::max_element(x_coords.begin(), x_coords.end());
+
+    // Scan each scan-line within the polygon's vertical extent
+    for (i = xmin; i <= xmax; i++) {
+        // Initialize an array to store the intersection points
+        std::vector<int> interPoints;
+
+        for (j = 0; j < edges; j++) {
+            int next = (j + 1) % edges;
+
+            // Check if the current edge intersects with the scan line
+            if ((y_coords[j] > i && y_coords[next] <= i) || (y_coords[next] > i && y_coords[j] <= i)) {
+                int interX = x_coords[j] + (i - y_coords[j]) * (x_coords[next] - x_coords[j]) / (y_coords[next] - y_coords[j]);
+                interPoints.push_back(interX);
+            }
+        }
+
+        // Sort the intersection points in ascending order
+        std::sort(interPoints.begin(), interPoints.end());
+
+        // Fill the pixels between pairs of intersection points
+        for (j = 0; j < interPoints.size(); j += 2) {
+            if (j + 1 < interPoints.size()) {
+                drawLine(interPoints[j], i, interPoints[j + 1], i);
+            }
+        }
+    }
+}
+
+// Display callback for OpenGL
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    scanFill();
+    glFlush();
+}
+// Function to initialize OpenGL
+
+void init() {
+    // Set the background color to white and the drawing color to black
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glColor3f(0.0, 0.0, 0.0);
+
+    // Set up 2D orthographic projection with the window size
+    glMatrixMode(GL_PROJECTION);
+    gluOrtho2D(0.0, 500.0, 0.0, 500.0);  // Adjust window size as needed
+}
+
+int main(int argc, char** argv) {
+    // Define the polygon vertices
+    x_coords = { 100, 200, 300 };
+    y_coords = { 100, 300, 200 };
+    edges = 3;
+
+    // Initialize GLUT
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(500, 500);   // Window size
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("Scan-Line Polygon Fill");
+
+    init();  // Set up OpenGL
+
+    // Register the display callback function
+    glutDisplayFunc(display);
+
+    // Enter the GLUT main loop
+    glutMainLoop();
+
+    return 0;
+}

@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=JavaAnagramsExample
+comment1.params=
+comment1.target=void\ input()
+comment2.params=s1\ s2
+comment2.target=void\ display(java.lang.String,\ java.lang.String)
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+numComments=4

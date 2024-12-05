@@ -1,0 +1,69 @@
+This program should display either the sphere or cube in an isometric view, allowing you to switch between them by pressing 't'.
+
+#include <GL/freeglut.h>
+bool showSphere = true; // Toggle between sphere and cube
+
+// Function to draw a wireframe sphere
+void drawWireframeSphere() {
+    glColor3f(1.0f, 1.0f, 1.0f); // Set color to white
+    glLineWidth(0.5f);            // Ensure thin lines
+    glutWireSphere(1.0, 20, 20);  // Draw a wireframe sphere with radius 1 and resolution of 20 slices and stacks
+}
+
+// Function to draw a wireframe cube
+void drawWireframeCube() {
+    glColor3f(1.0f, 1.0f, 1.0f); // Set color to white
+    glutWireCube(1.0);           // Draw a wireframe cube with side length 1
+}
+
+// Display function to render the isometric view of the chosen object
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear color and depth buffers
+
+    // Set up the isometric view
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0.0f, 0.0f, -3.0f);  // Position object further from the camera
+    glRotatef(30, 1.0f, 1.0f, 0.0f);  // Rotate for isometric effect
+
+    if (showSphere) {
+        drawWireframeSphere();        // Draw the sphere
+    }
+    else {
+        drawWireframeCube();          // Draw the cube
+    }
+
+    glutSwapBuffers();  // Swap buffers for double buffering
+}
+
+// Initialize OpenGL settings
+void init() {
+    glEnable(GL_DEPTH_TEST);             // Enable depth testing
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background to black
+
+    // Set up projection
+    glMatrixMode(GL_PROJECTION);
+    gluPerspective(85.0, 1.0, 1.0, 100.0); // Perspective projection for depth
+}
+
+// Keyboard function to toggle between sphere and cube
+void keyboard(unsigned char key, int x, int y) {
+    if (key == 't') {
+        showSphere = !showSphere; // Toggle object
+        glutPostRedisplay();      // Request display update
+    }
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // Double buffering and depth
+    glutInitWindowSize(600, 600);                            // Set window size
+    glutCreateWindow("Isometric View of Wireframe Sphere and Cube - Akshat Negi"); // Window title
+
+    init();                    // Initialize OpenGL state
+    glutDisplayFunc(display);  // Register display callback function
+    glutKeyboardFunc(keyboard); // Register keyboard callback function
+
+    glutMainLoop();
+    return 0;
+}

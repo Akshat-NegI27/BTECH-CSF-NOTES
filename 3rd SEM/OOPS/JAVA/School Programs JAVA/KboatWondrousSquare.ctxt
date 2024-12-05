@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=KboatWondrousSquare
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=arr
+comment2.target=boolean\ isWondrous(int[][])
+comment3.params=arr
+comment3.target=void\ printPrime(int[][])
+comment4.params=num
+comment4.target=boolean\ isPrime(int)
+numComments=5

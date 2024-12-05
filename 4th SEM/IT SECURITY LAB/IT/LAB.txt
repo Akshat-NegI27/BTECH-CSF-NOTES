@@ -1,0 +1,90 @@
+Brute force Attack:
+
+Perform following taks:
+
+- Configure Burp Suite for the attack
+
+- Perform brute force attack 
+
+- Prepare a report with analysis and countermeasures.
+
+
+
+page icon
+Lab 9Page
+Mark As Done
+MITM: ARP poisoning
+
+Demonstrate ARP poisoning and spoofing  on
+
+- DVWA
+
+-  demo.testfire site
+
+- testphpvulweb site
+
+- Make a report with details
+
+page icon
+Lab 6 - Demo_Solution (64 bit)Page
+Mark As Done
+// Solution works provided ... You change the return address as per your machine (Tested on Ubuntu 20.04.6 LTS) and the buffer size is same.
+
+
+
+#include <stdio.h> 
+
+#include <stdlib.h>
+
+#include <string.h>
+
+int main(int argc, char **argv) {
+
+char buffer[256];
+
+if(argc != 2) {
+
+exit(0);
+
+}
+
+printf("%p\n", buffer);
+
+strcpy(buffer, argv[1]);
+
+//printf("%s\n", buffer);
+
+return 0;
+
+}
+
+
+
+page icon
+Lab 6 - Demo_Solution (32 bit )Page
+Mark As Done
+// Solution works provided ... You change the return address as per your machine (Tested on Ubuntu 20.04.6 LTS) and the buffer size is same.
+
+#include <stdio.h> 
+
+#include <stdlib.h>
+
+#include <string.h>
+
+void vulnerable(char *tmp) {  
+
+    char input[400];  
+
+    strcpy(input,tmp); //character buffer  
+
+}  
+
+
+page icon
+Lab 10Page
+Mark As Done
+Getting familiar with File Upload and File Inclusion (RFI & LFI ) Web Application Vulnerabilities.
+
+- Demonstrate attack using file upload and file inclusion vulnerabilities on DVWA.
+
+- Report the analysis with countermeasures.

@@ -1,0 +1,202 @@
+
+How to Use
+Run the Program: You’ll be prompted to enter the clipping window coordinates and the polygon vertices.
+Press 'c': This will apply the Sutherland-Hodgman clipping and display the clipped polygon in the OpenGL window. It also prints the coordinates of the clipped polygon to the console.
+Press ESC: Exit the program.
+
+x_min = 100;
+y_min = 100;
+x_max = 300;
+y_max = 300;
+
+
+Points -> 5
+50 150
+150 50
+250 150
+200 250
+100 250
+
+
+#include <GL/freeglut.h>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Point {
+    float x, y;
+};
+
+// Global variables for the clipping window boundaries
+int x_min, y_min, x_max, y_max;
+vector<Point> polygon;
+vector<Point> clippedPolygon;
+
+// Function to draw a polygon
+void drawPolygon(const vector<Point>& poly, float r, float g, float b) {
+    glColor3f(r, g, b);
+    glBegin(GL_LINE_LOOP);
+    for (const auto& p : poly) {
+        glVertex2f(p.x, p.y);
+    }
+    glEnd();
+}
+
+// Function to check if a point is inside the clipping boundary
+bool inside(const Point& p, int edge) {
+    switch (edge) {
+        case 0: return p.x >= x_min;  // Left
+        case 1: return p.x <= x_max;  // Right
+        case 2: return p.y >= y_min;  // Bottom
+        case 3: return p.y <= y_max;  // Top
+    }
+    return true;
+}
+
+// Function to compute the intersection point with a clipping edge
+Point intersect(const Point& p1, const Point& p2, int edge) {
+    Point intersection;
+    float m;
+
+    if (p2.x != p1.x)
+        m = (p2.y - p1.y) / (p2.x - p1.x);  // Slope of the line
+
+    switch (edge) {
+        case 0: // Left edge
+            intersection.x = x_min;
+            intersection.y = p1.y + m * (x_min - p1.x);
+            break;
+        case 1: // Right edge
+            intersection.x = x_max;
+            intersection.y = p1.y + m * (x_max - p1.x);
+            break;
+        case 2: // Bottom edge
+            intersection.y = y_min;
+            if (p2.x != p1.x)
+                intersection.x = p1.x + (y_min - p1.y) / m;
+            else
+                intersection.x = p1.x;
+            break;
+        case 3: // Top edge
+            intersection.y = y_max;
+            if (p2.x != p1.x)
+                intersection.x = p1.x + (y_max - p1.y) / m;
+            else
+                intersection.x = p1.x;
+            break;
+    }
+    return intersection;
+}
+
+// Sutherland-Hodgman Polygon Clipping Algorithm
+vector<Point> sutherlandHodgmanClip(const vector<Point>& input, int edge) {
+    vector<Point> output;
+    Point s = input.back();  // Start with the last point
+
+    for (const auto& e : input) {
+        if (inside(e, edge)) { // Case 1: End point is inside
+            if (!inside(s, edge)) // Case 1.1: Start point is outside
+                output.push_back(intersect(s, e, edge));  // Add intersection point
+            output.push_back(e);  // Add end point
+        }
+        else if (inside(s, edge)) { // Case 2: End point is outside, start is inside
+            output.push_back(intersect(s, e, edge));  // Add intersection point
+        }
+        s = e;
+    }
+    return output;
+}
+
+// Clipping function to clip the polygon against all four edges
+void clipPolygon() {
+    clippedPolygon = polygon;
+    for (int edge = 0; edge < 4; edge++) {
+        clippedPolygon = sutherlandHodgmanClip(clippedPolygon, edge);
+    }
+
+    // Print the clipped polygon points to the console
+    cout << "Clipped Polygon Points:\n";
+    for (const auto& point : clippedPolygon) {
+        cout << "(" << point.x << ", " << point.y << ")\n";
+    }
+}
+
+// Display function to render the polygons
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw clipping window (rectangle)
+    glColor3f(1.0, 0.0, 0.0);  // Red color for the boundary
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(x_min, y_min);
+    glVertex2f(x_max, y_min);
+    glVertex2f(x_max, y_max);
+    glVertex2f(x_min, y_max);
+    glEnd();
+
+    // Draw original polygon
+    drawPolygon(polygon, 0.0f, 1.0f, 0.0f);  // Green color
+
+    // Draw clipped polygon
+    drawPolygon(clippedPolygon, 0.0f, 0.0f, 1.0f);  // Blue color
+
+    glFlush();
+}
+
+// Keyboard callback function
+void handleKeypress(unsigned char key, int x, int y) {
+    if (key == 'c') {
+        clipPolygon();
+        glutPostRedisplay();  // Request redisplay
+    } else if (key == 27) {  // ESC key
+        exit(0);
+    }
+}
+
+// Setup OpenGL
+void initGL() {
+    glClearColor(1.0, 1.0, 1.0, 1.0); // Set background color to white
+    glMatrixMode(GL_PROJECTION);
+    gluOrtho2D(0, 400, 0, 400); // Define 2D orthographic projection
+}
+
+void inputPolygon() {
+    int numVertices;
+    cout << "Enter number of vertices for the polygon: ";
+    cin >> numVertices;
+
+    polygon.clear();
+    for (int i = 0; i < numVertices; i++) {
+        Point p;
+        cout << "Enter vertex " << i + 1 << " (x, y): ";
+        cin >> p.x >> p.y;
+        polygon.push_back(p);
+    }
+}
+
+void inputClippingWindow() {
+    cout << "Enter the clipping window coordinates:\n";
+    cout << "x_min, y_min: ";
+    cin >> x_min >> y_min;
+    cout << "x_max, y_max: ";
+    cin >> x_max >> y_max;
+}
+
+int main(int argc, char** argv) {
+    // User inputs
+    inputClippingWindow();
+    inputPolygon();
+
+    // Initialize GLUT and display
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(600, 600);
+    glutCreateWindow("Sutherland-Hodgman Polygon Clipping - Akshat Negi");
+
+    initGL();
+    glutDisplayFunc(display);
+    glutKeyboardFunc(handleKeypress);
+    glutMainLoop();
+
+    return 0;
+}

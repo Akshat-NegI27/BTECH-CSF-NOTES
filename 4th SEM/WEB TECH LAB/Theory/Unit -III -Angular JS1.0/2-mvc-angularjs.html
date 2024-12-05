@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title>AngularJS MVC Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        // Define the AngularJS application module
+        var myApp = angular.module('myApp', []);
+
+        // Define the Model
+        myApp.factory('UserService', function() {
+            var users = [
+                { name: 'John', age: 30 },
+                { name: 'Jane', age: 25 },
+                { name: 'Doe', age: 40 }
+            ];
+
+            return {
+                getUsers: function() {
+                    return users;
+                }
+            };
+        });
+
+        // Define the Controller
+        myApp.controller('UserController', ['$scope', 'UserService', function($scope, UserService) {
+            $scope.users = UserService.getUsers();
+        }]);
+    </script>
+</head>
+<body>
+
+<div ng-controller="UserController">
+    <h2>Users</h2>
+    <ul>
+        <!-- View: Displaying user data -->
+        <li ng-repeat="user in users">{{ user.name }} - {{ user.age }}</li>
+    </ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Decioct
+comment1.params=
+comment1.target=Decioct()
+comment2.params=nn
+comment2.target=void\ getnum(int)
+comment3.params=
+comment3.target=void\ deci_oct()
+comment4.params=
+comment4.target=void\ show()
+comment5.params=args
+comment5.target=void\ main(java.lang.String[])
+numComments=6

@@ -1,0 +1,954 @@
+┌──(kali㉿kali)-[~]
+└─$ gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+                                                                                                                 
+┌──(kali㉿kali)-[~]
+└─$ su                   
+Password: 
+┌──(root㉿kali)-[/home/kali]
+└─# ./escalate  
+zsh: segmentation fault  ./escalate
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gdb -q --args ./escalate python -c'print “A”*408'  
+Reading symbols from ./escalate...
+(No debugging symbols found in ./escalate)
+(gdb) run
+Starting program: /home/kali/escalate python -cprint\ “A”\*408
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 9662) exited normally]
+(gdb) a
+Ambiguous command "a": actions, add-auto-load-safe-path, add-auto-load-scripts-directory, add-inferior...
+(gdb) run a
+Starting program: /home/kali/escalate a
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 9665) exited normally]
+(gdb) run aaaaaaaaaaaaaa
+Starting program: /home/kali/escalate aaaaaaaaaaaaaa
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 9666) exited normally]
+(gdb) disas main
+Dump of assembler code for function main:
+   0x565561be <+0>:	lea    0x4(%esp),%ecx
+   0x565561c2 <+4>:	and    $0xfffffff0,%esp
+   0x565561c5 <+7>:	push   -0x4(%ecx)
+   0x565561c8 <+10>:	push   %ebp
+   0x565561c9 <+11>:	mov    %esp,%ebp
+   0x565561cb <+13>:	push   %ecx
+   0x565561cc <+14>:	sub    $0x4,%esp
+   0x565561cf <+17>:	call   0x565561fc <__x86.get_pc_thunk.ax>
+   0x565561d4 <+22>:	add    $0x2e20,%eax
+   0x565561d9 <+27>:	mov    %ecx,%eax
+   0x565561db <+29>:	mov    0x4(%eax),%eax
+   0x565561de <+32>:	add    $0x4,%eax
+   0x565561e1 <+35>:	mov    (%eax),%eax
+   0x565561e3 <+37>:	sub    $0xc,%esp
+   0x565561e6 <+40>:	push   %eax
+   0x565561e7 <+41>:	call   0x5655618d <vulnerable>
+   0x565561ec <+46>:	add    $0x10,%esp
+   0x565561ef <+49>:	mov    $0x0,%eax
+   0x565561f4 <+54>:	mov    -0x4(%ebp),%ecx
+   0x565561f7 <+57>:	leave
+   0x565561f8 <+58>:	lea    -0x4(%ecx),%esp
+   0x565561fb <+61>:	ret
+End of assembler dump.
+(gdb) info reg
+The program has no registers now.
+(gdb) run < <($python -c 'print("A")')
+Starting program: /home/kali/escalate < <($python -c 'print("A")')
+zsh:1: command not found: -c
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0xf7cab758 in ?? () from /lib32/libc.so.6
+(gdb) info reg
+eax            0x56558ff4          1448447988
+ecx            0x0                 0
+edx            0xffffcd90          -12912
+ebx            0x56558ff4          1448447988
+esp            0xffffcd7c          0xffffcd7c
+ebp            0xffffce98          0xffffce98
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0xf7cab758          0xf7cab758
+eflags         0x10292             [ AF SF IF RF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) exit
+A debugging session is active.
+
+	Inferior 1 [process 9667] will be killed.
+
+Quit anyway? (y or n) y
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+escalate.c: In function ‘main’:
+escalate.c:14:7: error: stray ‘\302’ in program
+   14 | return<U+00A0>0;
+      |       ^~~~~~~~
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+escalate.c: In function ‘main’:
+escalate.c:14:7: error: stray ‘\302’ in program
+   14 | return<U+00A0>0;
+      |       ^~~~~~~~
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+escalate.c: In function ‘main’:
+escalate.c:12:7: error: stray ‘\302’ in program
+   12 | return<U+00A0>0;
+      |       ^~~~~~~~
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gdb                                                              
+GNU gdb (Debian 13.2-1) 13.2
+Copyright (C) 2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+(gdb) disas main
+No symbol table is loaded.  Use the "file" command.
+(gdb) gdb ssh3
+Undefined command: "gdb".  Try "help".
+(gdb) r AAAAAA
+Starting program:  AAAAAA
+No executable file specified.
+Use the "file" or "exec-file" command.
+(gdb) ./escalate
+Undefined command: ".".  Try "help".
+(gdb) exit
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# gdb ./escalate                                                   
+GNU gdb (Debian 13.2-1) 13.2
+Copyright (C) 2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./escalate...
+(No debugging symbols found in ./escalate)
+(gdb) disas main
+Dump of assembler code for function main:
+   0x000011ad <+0>:	lea    0x4(%esp),%ecx
+   0x000011b1 <+4>:	and    $0xfffffff0,%esp
+   0x000011b4 <+7>:	push   -0x4(%ecx)
+   0x000011b7 <+10>:	push   %ebp
+   0x000011b8 <+11>:	mov    %esp,%ebp
+   0x000011ba <+13>:	push   %esi
+   0x000011bb <+14>:	push   %ebx
+   0x000011bc <+15>:	push   %ecx
+   0x000011bd <+16>:	sub    $0x10c,%esp
+   0x000011c3 <+22>:	call   0x10b0 <__x86.get_pc_thunk.bx>
+   0x000011c8 <+27>:	add    $0x2e2c,%ebx
+   0x000011ce <+33>:	mov    %ecx,%esi
+   0x000011d0 <+35>:	cmpl   $0x2,(%esi)
+   0x000011d3 <+38>:	je     0x11df <main+50>
+   0x000011d5 <+40>:	sub    $0xc,%esp
+   0x000011d8 <+43>:	push   $0x0
+   0x000011da <+45>:	call   0x1060 <exit@plt>
+   0x000011df <+50>:	sub    $0x8,%esp
+   0x000011e2 <+53>:	lea    -0x118(%ebp),%eax
+   0x000011e8 <+59>:	push   %eax
+   0x000011e9 <+60>:	lea    -0x1fec(%ebx),%eax
+   0x000011ef <+66>:	push   %eax
+   0x000011f0 <+67>:	call   0x1040 <printf@plt>
+   0x000011f5 <+72>:	add    $0x10,%esp
+   0x000011f8 <+75>:	mov    0x4(%esi),%eax
+   0x000011fb <+78>:	add    $0x4,%eax
+   0x000011fe <+81>:	mov    (%eax),%eax
+   0x00001200 <+83>:	sub    $0x8,%esp
+   0x00001203 <+86>:	push   %eax
+   0x00001204 <+87>:	lea    -0x118(%ebp),%eax
+   0x0000120a <+93>:	push   %eax
+   0x0000120b <+94>:	call   0x1050 <strcpy@plt>
+   0x00001210 <+99>:	add    $0x10,%esp
+   0x00001213 <+102>:	mov    $0x0,%eax
+   0x00001218 <+107>:	lea    -0xc(%ebp),%esp
+   0x0000121b <+110>:	pop    %ecx
+   0x0000121c <+111>:	pop    %ebx
+   0x0000121d <+112>:	pop    %esi
+   0x0000121e <+113>:	pop    %ebp
+   0x0000121f <+114>:	lea    -0x4(%ecx),%esp
+   0x00001222 <+117>:	ret
+End of assembler dump.
+(gdb) run AAAAAAA
+Starting program: /home/kali/escalate AAAAAAA
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0xffffcd90
+[Inferior 1 (process 10060) exited normally]
+(gdb) disas main
+Dump of assembler code for function main:
+   0x565561ad <+0>:	lea    0x4(%esp),%ecx
+   0x565561b1 <+4>:	and    $0xfffffff0,%esp
+   0x565561b4 <+7>:	push   -0x4(%ecx)
+   0x565561b7 <+10>:	push   %ebp
+   0x565561b8 <+11>:	mov    %esp,%ebp
+   0x565561ba <+13>:	push   %esi
+   0x565561bb <+14>:	push   %ebx
+   0x565561bc <+15>:	push   %ecx
+   0x565561bd <+16>:	sub    $0x10c,%esp
+   0x565561c3 <+22>:	call   0x565560b0 <__x86.get_pc_thunk.bx>
+   0x565561c8 <+27>:	add    $0x2e2c,%ebx
+   0x565561ce <+33>:	mov    %ecx,%esi
+   0x565561d0 <+35>:	cmpl   $0x2,(%esi)
+   0x565561d3 <+38>:	je     0x565561df <main+50>
+   0x565561d5 <+40>:	sub    $0xc,%esp
+   0x565561d8 <+43>:	push   $0x0
+   0x565561da <+45>:	call   0x56556060 <exit@plt>
+   0x565561df <+50>:	sub    $0x8,%esp
+   0x565561e2 <+53>:	lea    -0x118(%ebp),%eax
+   0x565561e8 <+59>:	push   %eax
+   0x565561e9 <+60>:	lea    -0x1fec(%ebx),%eax
+   0x565561ef <+66>:	push   %eax
+   0x565561f0 <+67>:	call   0x56556040 <printf@plt>
+   0x565561f5 <+72>:	add    $0x10,%esp
+   0x565561f8 <+75>:	mov    0x4(%esi),%eax
+   0x565561fb <+78>:	add    $0x4,%eax
+   0x565561fe <+81>:	mov    (%eax),%eax
+   0x56556200 <+83>:	sub    $0x8,%esp
+   0x56556203 <+86>:	push   %eax
+   0x56556204 <+87>:	lea    -0x118(%ebp),%eax
+   0x5655620a <+93>:	push   %eax
+   0x5655620b <+94>:	call   0x56556050 <strcpy@plt>
+   0x56556210 <+99>:	add    $0x10,%esp
+   0x56556213 <+102>:	mov    $0x0,%eax
+   0x56556218 <+107>:	lea    -0xc(%ebp),%esp
+   0x5655621b <+110>:	pop    %ecx
+   0x5655621c <+111>:	pop    %ebx
+   0x5655621d <+112>:	pop    %esi
+   0x5655621e <+113>:	pop    %ebp
+   0x5655621f <+114>:	lea    -0x4(%ecx),%esp
+   0x56556222 <+117>:	ret
+End of assembler dump.
+(gdb) b *0x5655620b
+Breakpoint 1 at 0x5655620b
+(gdb) b *Quit
+(gdb) b *0x5655621f
+Breakpoint 2 at 0x5655621f
+(gdb) i r
+The program has no registers now.
+(gdb) run AAAAA
+Starting program: /home/kali/escalate AAAAA
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0xffffcd90
+
+Breakpoint 1, 0x5655620b in main ()
+(gdb) i r
+eax            0xffffcd90          -12912
+ecx            0xffffcd3c          -12996
+edx            0x1                 1
+ebx            0x56558ff4          1448447988
+esp            0xffffcd80          0xffffcd80
+ebp            0xffffcea8          0xffffcea8
+esi            0xffffcec0          -12608
+edi            0xf7ffcba0          -134231136
+eip            0x5655620b          0x5655620b <main+94>
+eflags         0x296               [ PF AF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) p Quit
+(gdb) p 0xffffcd80 -Quit
+(gdb) p 0xffffcd80 -0xffffcd80
+$1 = 0
+(gdb) p 0xffffcd80 -0xffffcea8
+$2 = 4294967000
+(gdb) x 0xffffcea8
+0xffffcea8:	0x00000000
+(gdb) x/20 xg $esp
+No symbol table is loaded.  Use the "file" command.
+(gdb) x/20xg $esp
+0xffffcd80:	0xffffd176ffffcd90	0x565561c800000000
+0xffffcd90:	0xf7fca6acf7ffcff4	0xf7fca67cf7c1c9a2
+0xffffcda0:	0xf7ffd5e8003055e4	0xffffce6000000004
+0xffffcdb0:	0xf7fc2700ffffcdd4	0xf7fc857000000000
+0xffffcdc0:	0x00000003f7ffcff4	0xf7c0990000000000
+0xffffcdd0:	0x0000000000000000	0xf7c11150565552c8
+0xffffcde0:	0x003055e4f63d4e2e	0xffffce60f7fc25e8
+0xffffcdf0:	0xf7fd439effffce64	0xffffce64f7c09a30
+0xffffce00:	0x00000002f7ffdb9c	0x00000001f7fc2ad0
+0xffffce10:	0x0000000100000000	0x00000000f7fc2410
+(gdb) 
+0xffffce20:	0xf63d4e2e00000000	0xffffcea0f7ffdc08
+0xffffce30:	0x0000000cf7ffcff4	0xffffcea400000000
+0xffffce40:	0x00000001f7ffdb9c	0x00000001f7fc2730
+0xffffce50:	0x0000000100000000	0x0000001cf7ffda30
+0xffffce60:	0xf7fca67cffffffff	0xffffdfe4f7ffd5e8
+0xffffce70:	0x0000000cf7ffcff4	0x0000000000000000
+0xffffce80:	0x0000000000000000	0xf7fc241000000013
+0xffffce90:	0xf7fd9e61f7c216ac	0xffffcec0f7c1c9a2
+0xffffcea0:	0x56558eecf7e1dff4	0xf7c237c500000000
+0xffffceb0:	0x0000000000000001	0xf7c237c500000078
+(gdb) 
+0xffffcec0:	0xffffcf7400000002	0xffffcee0ffffcf80
+0xffffced0:	0x565561adf7e1dff4	0xffffcf7400000002
+0xffffcee0:	0x56558eecf7e1dff4	0x00000000f7ffcba0
+0xffffcef0:	0xeaea9be4911811f4	0x0000000000000000
+0xffffcf00:	0xf7ffcba000000000	0x24ac1e0000000000
+0xffffcf10:	0xf7c23756f7ffda30	0xf7c23888f7e1dff4
+0xffffcf20:	0x56558eecf7fcaac4	0xf7ffd00000000000
+0xffffcf30:	0xf7fdbe8000000000	0x56558ff4f7c23809
+0xffffcf40:	0x5655608000000002	0x565560a700000000
+0xffffcf50:	0x00000002565561ad	0x00000000ffffcf74
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x5655621f in main ()
+(gdb) i r
+eax            0x0                 0
+ecx            0xffffcec0          -12608
+edx            0xffffcd90          -12912
+ebx            0xf7e1dff4          -136192012
+esp            0xffffceac          0xffffceac
+ebp            0x0                 0x0
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) x/20xg $esp
+0xffffceac:	0x00000001f7c237c5	0x0000007800000000
+0xffffcebc:	0x00000002f7c237c5	0xffffcf80ffffcf74
+0xffffcecc:	0xf7e1dff4ffffcee0	0x00000002565561ad
+0xffffcedc:	0xf7e1dff4ffffcf74	0xf7ffcba056558eec
+0xffffceec:	0x911811f400000000	0x00000000eaea9be4
+0xffffcefc:	0x0000000000000000	0x00000000f7ffcba0
+0xffffcf0c:	0xf7ffda3024ac1e00	0xf7e1dff4f7c23756
+0xffffcf1c:	0xf7fcaac4f7c23888	0x0000000056558eec
+0xffffcf2c:	0x00000000f7ffd000	0xf7c23809f7fdbe80
+0xffffcf3c:	0x0000000256558ff4	0x0000000056556080
+(gdb) 
+0xffffcf4c:	0x565561ad565560a7	0xffffcf7400000002
+0xffffcf5c:	0x0000000000000000	0xffffcf6cf7fceca0
+0xffffcf6c:	0x00000002f7ffda30	0xffffd176ffffd162
+0xffffcf7c:	0xffffd17c00000000	0xffffd1bbffffd192
+0xffffcf8c:	0xffffd25fffffd209	0xffffd28cffffd272
+0xffffcf9c:	0xffffd2b8ffffd29d	0xffffd2d9ffffd2ca
+0xffffcfac:	0xffffd31fffffd2eb	0xffffd33fffffd329
+0xffffcfbc:	0xffffd361ffffd356	0xffffd39bffffd384
+0xffffcfcc:	0xffffd3edffffd3d1	0xffffd437ffffd42a
+0xffffcfdc:	0xffffd464ffffd451	0xffffd4a1ffffd490
+(gdb) run AAAAAAAAAAAAAAAAAAAAAAAAAa
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate AAAAAAAAAAAAAAAAAAAAAAAAAa
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0xffffcd70
+
+Breakpoint 1, 0x5655620b in main ()
+(gdb) ir
+Undefined command: "ir".  Try "help".
+(gdb) i r
+eax            0xffffcd70          -12944
+ecx            0xffffcd1c          -13028
+edx            0x1                 1
+ebx            0x56558ff4          1448447988
+esp            0xffffcd60          0xffffcd60
+ebp            0xffffce88          0xffffce88
+esi            0xffffcea0          -12640
+edi            0xf7ffcba0          -134231136
+eip            0x5655620b          0x5655620b <main+94>
+eflags         0x292               [ AF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) run $(python -c 'print("A"*408)')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate $(python -c 'print("A"*408)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0xffffcbf0
+
+Breakpoint 1, 0x5655620b in main ()
+(gdb) i r
+eax            0xffffcbf0          -13328
+ecx            0xffffcb9c          -13412
+edx            0x1                 1
+ebx            0x56558ff4          1448447988
+esp            0xffffcbe0          0xffffcbe0
+ebp            0xffffcd08          0xffffcd08
+esi            0xffffcd20          -13024
+edi            0xf7ffcba0          -134231136
+eip            0x5655620b          0x5655620b <main+94>
+eflags         0x296               [ PF AF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) p 0xffffcbe0 -0xffffcd08
+$3 = 4294967000
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x5655621f in main ()
+(gdb) i r
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) 
+eax            0x0                 0
+ecx            0x41414141          1094795585
+edx            0xffffcd7d          -12931
+ebx            0x41414141          1094795585
+esp            0xffffcd0c          0xffffcd0c
+ebp            0x41414141          0x41414141
+esi            0x41414141          1094795585
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) x/20xg $esp
+0xffffcd0c:	0x4141414141414141	0x4141414141414141
+0xffffcd1c:	0x4141414141414141	0x4141414141414141
+0xffffcd2c:	0x4141414141414141	0x4141414141414141
+0xffffcd3c:	0x4141414141414141	0x4141414141414141
+0xffffcd4c:	0x4141414141414141	0x4141414141414141
+0xffffcd5c:	0x4141414141414141	0x4141414141414141
+0xffffcd6c:	0x4141414141414141	0x4141414141414141
+0xffffcd7c:	0x4141414141414141	0x0000000041414141
+0xffffcd8c:	0x00000000f7ffd000	0xf7c23809f7fdbe80
+0xffffcd9c:	0x0000000256558ff4	0x0000000056556080
+(gdb) 
+0xffffcdac:	0x565561ad565560a7	0xffffcdd400000002
+0xffffcdbc:	0x0000000000000000	0xffffcdccf7fceca0
+0xffffcdcc:	0x00000002f7ffda30	0xffffcfe3ffffcfcf
+0xffffcddc:	0xffffd17c00000000	0xffffd1bbffffd192
+0xffffcdec:	0xffffd25fffffd209	0xffffd28cffffd272
+0xffffcdfc:	0xffffd2b8ffffd29d	0xffffd2d9ffffd2ca
+0xffffce0c:	0xffffd31fffffd2eb	0xffffd33fffffd329
+0xffffce1c:	0xffffd361ffffd356	0xffffd39bffffd384
+0xffffce2c:	0xffffd3edffffd3d1	0xffffd437ffffd42a
+0xffffce3c:	0xffffd464ffffd451	0xffffd4a1ffffd490
+(gdb) 
+0xffffce4c:	0xffffd4ccffffd4bf	0xffffd548ffffd4ea
+0xffffce5c:	0xffffd59affffd567	0xffffd5c1ffffd5ae
+0xffffce6c:	0xffffd5f4ffffd5df	0xffffd620ffffd612
+0xffffce7c:	0xffffd678ffffd663	0xffffd6ceffffd6a5
+0xffffce8c:	0xffffd6fdffffd6e9	0xffffd7acffffd798
+0xffffce9c:	0xffffd7c8ffffd7bd	0xffffd7e2ffffd7d0
+0xffffceac:	0xffffdf1dffffdf05	0xffffdf4affffdf35
+0xffffcebc:	0xffffdf78ffffdf63	0xffffdfa5ffffdf90
+0xffffcecc:	0xffffdfcfffffdfbb	0x00000000ffffdfd8
+0xffffcedc:	0xf7fc857000000020	0xf7fc800000000021
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x56556222 in main ()
+(gdb) x 0x56556222
+0x56556222 <main+117>:	0x83e808ec835300c3
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+(gdb) x/20xg $esp
+No registers.
+(gdb) c
+The program is not being run.
+(gdb) c
+The program is not being run.
+(gdb) c
+The program is not being run.
+(gdb) run $(python -c 'print("A"*264)')
+Starting program: /home/kali/escalate $(python -c 'print("A"*264)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0xffffcc80
+
+Breakpoint 1, 0x5655620b in main ()
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x5655621f in main ()
+(gdb) x/20xg $esp
+0xffffcd9c:	0x00000001f7c237c5	0x0000007800000000
+0xffffcdac:	0x00000002f7c237c5	0xffffce70ffffce64
+0xffffcdbc:	0xf7e1dff4ffffcdd0	0x00000002565561ad
+0xffffcdcc:	0xf7e1dff4ffffce64	0xf7ffcba056558eec
+0xffffcddc:	0x527e9b6f00000000	0x00000000298af17f
+0xffffcdec:	0x0000000000000000	0x00000000f7ffcba0
+0xffffcdfc:	0xf7ffda30514e3400	0xf7e1dff4f7c23756
+0xffffce0c:	0xf7fcaac4f7c23888	0x0000000056558eec
+0xffffce1c:	0x00000000f7ffd000	0xf7c23809f7fdbe80
+0xffffce2c:	0x0000000256558ff4	0x0000000056556080
+(gdb) 
+0xffffce3c:	0x565561ad565560a7	0xffffce6400000002
+0xffffce4c:	0x0000000000000000	0xffffce5cf7fceca0
+0xffffce5c:	0x00000002f7ffda30	0xffffd073ffffd05f
+0xffffce6c:	0xffffd17c00000000	0xffffd1bbffffd192
+0xffffce7c:	0xffffd25fffffd209	0xffffd28cffffd272
+0xffffce8c:	0xffffd2b8ffffd29d	0xffffd2d9ffffd2ca
+0xffffce9c:	0xffffd31fffffd2eb	0xffffd33fffffd329
+0xffffceac:	0xffffd361ffffd356	0xffffd39bffffd384
+0xffffcebc:	0xffffd3edffffd3d1	0xffffd437ffffd42a
+0xffffcecc:	0xffffd464ffffd451	0xffffd4a1ffffd490
+(gdb) 
+0xffffcedc:	0xffffd4ccffffd4bf	0xffffd548ffffd4ea
+0xffffceec:	0xffffd59affffd567	0xffffd5c1ffffd5ae
+0xffffcefc:	0xffffd5f4ffffd5df	0xffffd620ffffd612
+0xffffcf0c:	0xffffd678ffffd663	0xffffd6ceffffd6a5
+0xffffcf1c:	0xffffd6fdffffd6e9	0xffffd7acffffd798
+0xffffcf2c:	0xffffd7c8ffffd7bd	0xffffd7e2ffffd7d0
+0xffffcf3c:	0xffffdf1dffffdf05	0xffffdf4affffdf35
+0xffffcf4c:	0xffffdf78ffffdf63	0xffffdfa5ffffdf90
+0xffffcf5c:	0xffffdfcfffffdfbb	0x00000000ffffdfd8
+0xffffcf6c:	0xf7fc857000000020	0xf7fc800000000021
+(gdb) 
+0xffffcf7c:	0x000006f000000033	0x1f8bfbff00000010
+0xffffcf8c:	0x0000100000000006	0x0000006400000011
+0xffffcf9c:	0x5655503400000003	0x0000002000000004
+0xffffcfac:	0x0000000b00000005	0xf7fca00000000007
+0xffffcfbc:	0x0000000000000008	0x5655608000000009
+0xffffcfcc:	0x000000000000000b	0x000000000000000c
+0xffffcfdc:	0x000000000000000d	0x000000000000000e
+0xffffcfec:	0x0000000000000017	0xffffd03b00000019
+0xffffcffc:	0x000000020000001a	0xffffdfe40000001f
+0xffffd00c:	0xffffd04b0000000f	0x0000001c0000001b
+(gdb) 
+0xffffd01c:	0x000000200000001c	0x0000000000000000
+0xffffd02c:	0x0000000000000000	0xdf00000000000000
+0xffffd03c:	0x374856f2fd514e34	0x69e90192da068d2e
+0xffffd04c:	0x0000000000363836	0x0000000000000000
+0xffffd05c:	0x656d6f682f000000	0x73652f696c616b2f
+0xffffd06c:	0x41006574616c6163	0x4141414141414141
+0xffffd07c:	0x4141414141414141	0x4141414141414141
+0xffffd08c:	0x4141414141414141	0x4141414141414141
+0xffffd09c:	0x4141414141414141	0x4141414141414141
+0xffffd0ac:	0x4141414141414141	0x4141414141414141
+(gdb) run $(python -c 'print("A"*408"B"*6)')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate $(python -c 'print("A"*408"B"*6)')
+  File "<string>", line 1
+    print("A"*408"B"*6)
+          ^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 10169) exited normally]
+(gdb) c
+The program is not being run.
+(gdb) run $(python -c 'print("A"*264+"B"*6)')
+Starting program: /home/kali/escalate $(python -c 'print("A"*264+"B"*6)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0xffffcc80
+
+Breakpoint 1, 0x5655620b in main ()
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x5655621f in main ()
+(gdb) i r
+eax            0x0                 0
+ecx            0xff004242          -16760254
+edx            0xffffcd83          -12925
+ebx            0xf7e1dff4          -136192012
+esp            0xffffcd9c          0xffffcd9c
+ebp            0x0                 0x0
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x282               [ SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) x/20xg $esp
+0xffffcd9c:	0x00000001f7c237c5	0x0000007800000000
+0xffffcdac:	0x00000002f7c237c5	0xffffce70ffffce64
+0xffffcdbc:	0xf7e1dff4ffffcdd0	0x00000002565561ad
+0xffffcdcc:	0xf7e1dff4ffffce64	0xf7ffcba056558eec
+0xffffcddc:	0x70964cba00000000	0x000000000b6226aa
+0xffffcdec:	0x0000000000000000	0x00000000f7ffcba0
+0xffffcdfc:	0xf7ffda3077382900	0xf7e1dff4f7c23756
+0xffffce0c:	0xf7fcaac4f7c23888	0x0000000056558eec
+0xffffce1c:	0x00000000f7ffd000	0xf7c23809f7fdbe80
+0xffffce2c:	0x0000000256558ff4	0x0000000056556080
+(gdb) 
+0xffffce3c:	0x565561ad565560a7	0xffffce6400000002
+0xffffce4c:	0x0000000000000000	0xffffce5cf7fceca0
+0xffffce5c:	0x00000002f7ffda30	0xffffd06dffffd059
+0xffffce6c:	0xffffd17c00000000	0xffffd1bbffffd192
+0xffffce7c:	0xffffd25fffffd209	0xffffd28cffffd272
+0xffffce8c:	0xffffd2b8ffffd29d	0xffffd2d9ffffd2ca
+0xffffce9c:	0xffffd31fffffd2eb	0xffffd33fffffd329
+0xffffceac:	0xffffd361ffffd356	0xffffd39bffffd384
+0xffffcebc:	0xffffd3edffffd3d1	0xffffd437ffffd42a
+0xffffcecc:	0xffffd464ffffd451	0xffffd4a1ffffd490
+(gdb) 
+0xffffcedc:	0xffffd4ccffffd4bf	0xffffd548ffffd4ea
+0xffffceec:	0xffffd59affffd567	0xffffd5c1ffffd5ae
+0xffffcefc:	0xffffd5f4ffffd5df	0xffffd620ffffd612
+0xffffcf0c:	0xffffd678ffffd663	0xffffd6ceffffd6a5
+0xffffcf1c:	0xffffd6fdffffd6e9	0xffffd7acffffd798
+0xffffcf2c:	0xffffd7c8ffffd7bd	0xffffd7e2ffffd7d0
+0xffffcf3c:	0xffffdf1dffffdf05	0xffffdf4affffdf35
+0xffffcf4c:	0xffffdf78ffffdf63	0xffffdfa5ffffdf90
+0xffffcf5c:	0xffffdfcfffffdfbb	0x00000000ffffdfd8
+0xffffcf6c:	0xf7fc857000000020	0xf7fc800000000021
+(gdb) 
+0xffffcf7c:	0x000006f000000033	0x1f8bfbff00000010
+0xffffcf8c:	0x0000100000000006	0x0000006400000011
+0xffffcf9c:	0x5655503400000003	0x0000002000000004
+0xffffcfac:	0x0000000b00000005	0xf7fca00000000007
+0xffffcfbc:	0x0000000000000008	0x5655608000000009
+0xffffcfcc:	0x000000000000000b	0x000000000000000c
+0xffffcfdc:	0x000000000000000d	0x000000000000000e
+0xffffcfec:	0x0000000000000017	0xffffd03b00000019
+0xffffcffc:	0x000000020000001a	0xffffdfe40000001f
+0xffffd00c:	0xffffd04b0000000f	0x0000001c0000001b
+(gdb) 
+0xffffd01c:	0x000000200000001c	0x0000000000000000
+0xffffd02c:	0x0000000000000000	0x7200000000000000
+0xffffd03c:	0x6ea2c78696773829	0x69000193958f3a83
+0xffffd04c:	0x0000000000363836	0x6f682f0000000000
+0xffffd05c:	0x2f696c616b2f656d	0x6574616c61637365
+0xffffd06c:	0x4141414141414100	0x4141414141414141
+0xffffd07c:	0x4141414141414141	0x4141414141414141
+0xffffd08c:	0x4141414141414141	0x4141414141414141
+0xffffd09c:	0x4141414141414141	0x4141414141414141
+0xffffd0ac:	0x4141414141414141	0x4141414141414141
+(gdb) 
+0xffffd0bc:	0x4141414141414141	0x4141414141414141
+0xffffd0cc:	0x4141414141414141	0x4141414141414141
+0xffffd0dc:	0x4141414141414141	0x4141414141414141
+0xffffd0ec:	0x4141414141414141	0x4141414141414141
+0xffffd0fc:	0x4141414141414141	0x4141414141414141
+0xffffd10c:	0x4141414141414141	0x4141414141414141
+0xffffd11c:	0x4141414141414141	0x4141414141414141
+0xffffd12c:	0x4141414141414141	0x4141414141414141
+0xffffd13c:	0x4141414141414141	0x4141414141414141
+0xffffd14c:	0x4141414141414141	0x4141414141414141
+(gdb) 
+0xffffd15c:	0x4141414141414141	0x4141414141414141
+0xffffd16c:	0x4141414141414141	0x0042424242424241
+0xffffd17c:	0x5f444d4554535953	0x4449505f43455845
+0xffffd18c:	0x535300313534323d	0x535f485455415f48
+0xffffd19c:	0x6e75722f3d4b434f	0x30312f726573752f
+0xffffd1ac:	0x697279656b2f3030	0x53006873732f676e
+0xffffd1bc:	0x4d5f4e4f49535345	0x6c3d524547414e41
+0xffffd1cc:	0x6c616b2f6c61636f	0x2f706d742f403a69
+0xffffd1dc:	0x696e752d4543492e	0x752c313132322f78
+0xffffd1ec:	0x696c616b2f78696e	0x492e2f706d742f3a
+(gdb) i r
+eax            0x0                 0
+ecx            0xff004242          -16760254
+edx            0xffffcd83          -12925
+ebx            0xf7e1dff4          -136192012
+esp            0xffffcd9c          0xffffcd9c
+ebp            0x0                 0x0
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x5655621f          0x5655621f <main+114>
+eflags         0x282               [ SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) exit
+A debugging session is active.
+
+	Inferior 1 [process 10171] will be killed.
+
+Quit anyway? (y or n) y
+                                                                                                                 
+┌──(root㉿kali)-[/home/kali]
+└─# 

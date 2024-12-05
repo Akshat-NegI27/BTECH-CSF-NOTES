@@ -1,0 +1,17 @@
+Introduction to defining language, automata
+Kleene closures
+Finite Automata (FA)
+Construction of FA Machines
+Construction of  NFA  
+Construction of  NFA with E-moves 
+NFA with E-moves to without E-moves
+NFA to DFA Conversion
+Minimization of Automata 
+Finite State Transducer: Moore machine, Mealy machine 
+Applications of Moore and Mealy Machines, Limitations of FA
+Introduction to Regular Expressions (RE) and Regular Languages.
+Equivalence of FA With RE
+Grammar Classification
+Arden Theorem
+Pumping Lemma for regular expressions, 
+Myhill-Nerode theorem

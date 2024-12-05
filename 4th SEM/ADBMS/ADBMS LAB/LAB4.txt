@@ -1,0 +1,93 @@
+List the details of the employees whose salaries are more than the employee BLAKE.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE SAL > (SELECT SAL FROM EMP WHERE ENAME = 'BLAKE');
+List the employees whose jobs are the same as ALLEN.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE JOB = (SELECT JOB FROM EMP WHERE ENAME = 'ALLEN');
+List the employees whose salary is the same as FORD or SMITH in descending order of names.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE SAL IN (SELECT SAL FROM EMP WHERE ENAME IN ('FORD', 'SMITH'))
+ORDER BY ENAME DESC;
+List the employees whose jobs are the same as MILLER or salary is more than ALLEN.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE JOB = (SELECT JOB FROM EMP WHERE ENAME = 'MILLER')
+OR SAL > (SELECT SAL FROM EMP WHERE ENAME = 'ALLEN');
+Find the highest paid employee of the sales department.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE SAL = (SELECT MAX(SAL) FROM EMP WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE DNAME = 'SALES'));
+List the employees who are senior to the most recently hired employee working under KING.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE HIREDATE < (SELECT MAX(HIREDATE) FROM EMP WHERE MGR = (SELECT EMPNO FROM EMP WHERE ENAME = 'KING'));
+List the names of the employees who are getting the highest salary department-wise.
+sql
+****************************************
+SELECT E.ENAME FROM EMP E
+WHERE (E.SAL, E.DEPTNO) IN (SELECT MAX(SAL), DEPTNO FROM EMP GROUP BY DEPTNO);
+List the employees whose salary is equal to the average of the maximum and minimum.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE SAL = (SELECT AVG(SAL) FROM (SELECT MAX(SAL) AS SAL FROM EMP UNION SELECT MIN(SAL) AS SAL FROM EMP));
+List the employees who joined the company on the same date.
+sql
+****************************************
+SELECT * FROM EMP
+WHERE HIREDATE IN (SELECT HIREDATE FROM EMP GROUP BY HIREDATE HAVING COUNT(*) > 1);
+Find out the employees who joined the company before their managers.
+sql
+****************************************
+SELECT *
+FROM EMP E
+WHERE EXISTS (SELECT * FROM EMP WHERE EMPNO = E.MGR AND HIREDATE > E.HIREDATE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT *FROM EMP
+WHERE SAL = (SELECT (MAX(SAL) + MIN(SAL)) / 2
+             FROM EMP);
+
+
+
+
+
+
+
+
+
+
+

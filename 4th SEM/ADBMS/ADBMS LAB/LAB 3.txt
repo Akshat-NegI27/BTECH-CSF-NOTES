@@ -1,0 +1,155 @@
+CREATE TABLE Supplier (
+    scode INT PRIMARY KEY,
+    sname VARCHAR(30),
+    scity VARCHAR(45),
+    turnover INT
+);
+
+CREATE TABLE Part (
+    pcode INT PRIMARY KEY,
+    weight INT,
+    color VARCHAR(12),
+    cost INT,
+    sellingprice INT
+);
+
+CREATE TABLE Supplier_Part (
+    scode INT,
+    pcode INT,
+    qty INT,
+    PRIMARY KEY (scode, pcode),
+    FOREIGN KEY (scode) REFERENCES Supplier(scode),
+    FOREIGN KEY (pcode) REFERENCES Part(pcode)
+);
+
+
+*****************************************
+
+insert into part
+(pcode,weight,color,cost,sellingprice)
+values
+(500106533,60,"Red",2500,3000),
+(500107485,71,"Yellow",1999,2500),
+(500107856,59,"Pink",299,500),
+(500107859,88,"Purple",659,800),
+(500107845,66,"Blue",900,1200),
+(500107895,90,"Violet",200,350),
+(500106589,110,"Lime Green",250,400),
+(500105849,69,"Green",500,650);
+
+
+insert into supplier
+(scode,sname,scity,turnover)
+values
+(9994785,"Rohan","Dehradun",2),
+(9994856,"TATA","Delhi",27),
+(9997859,"JIO","Ajmer",6),
+(9994484,"STUDS","Haridwar",15),
+(9994755,"RUPA","Himachal",45),
+(9993485,"JOCKEY","Noida",24),
+(9998786,"RED HILL","Jaipur",12),
+(9992845,"OSWAL","Ghaziabad",23);
+
+
+insert into supplier_part
+(scode,pcode,qty)
+values
+(9994785,500106533,100),
+(9994856,500107485,500),
+(9997859,500107856,600),
+(9994484,500107859,1500),
+(9994755,500107845,450),
+(9993485,500107895,240),
+(9998786,500106589,120),
+(9992845,500105849,230);
+
+
+
+alter table supplier modify column turnover float;
+
+
+
+SELECT scode, pcode
+FROM Supplier_Part
+ORDER BY scode ASC;
+
+
+
+
+
+a) Get the supplier number and part number in ascending order of supplier number.
+
+sql
+Copy code
+SELECT scode, pcode
+FROM Supplier_Part
+ORDER BY scode ASC;
+b) Get the details of the supplier who operates from Bombay with a turnover of 50.
+
+sql
+Copy code
+SELECT *
+FROM Supplier
+WHERE scity = 'Bombay' AND turnover = 50;
+c) Get the total number of suppliers.
+
+sql
+Copy code
+SELECT COUNT(*) AS total_suppliers
+FROM Supplier;
+d) Get the part numbers weighing between 25 and 35.
+
+sql
+Copy code
+SELECT pcode
+FROM Part
+WHERE weight BETWEEN 25 AND 35;
+e) Get the supplier numbers whose turnover is null.
+
+sql
+Copy code
+SELECT scode
+FROM Supplier
+WHERE turnover IS NULL;
+f) Get the part numbers that cost 20, 30, or 40 rupees.
+
+sql
+Copy code
+SELECT pcode
+FROM Part
+WHERE cost IN (20, 30, 40);
+g) Get the total quantity of part 2 that is supplied.
+
+sql
+Copy code
+SELECT SUM(qty) AS total_quantity
+FROM Supplier_Part
+WHERE pcode = 2;
+h) Get the name of the supplier who supplies part 2.
+
+sql
+Copy code
+SELECT s.sname
+FROM Supplier s
+JOIN Supplier_Part sp ON s.scode = sp.scode
+WHERE sp.pcode = 2;
+i) Get the part numbers whose cost is greater than the average cost.
+
+sql
+Copy code
+SELECT pcode
+FROM Part
+WHERE cost > (SELECT AVG(cost) FROM Part);
+j) Get the supplier number and turnover in descending order of turnover.
+
+sql
+Copy code
+SELECT scode, turnover
+FROM Supplier
+ORDER BY turnover DESC;
+
+
+
+
+
+

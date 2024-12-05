@@ -1,0 +1,484 @@
+                                                                                                
+┌──(root㉿kali)-[/home/kali]
+└─# gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+                                                                                                
+┌──(root㉿kali)-[/home/kali]
+└─# gdb -q --args ./escalate python -c'print “A”*408'                
+Reading symbols from ./escalate...
+(No debugging symbols found in ./escalate)
+(gdb) run
+Starting program: /home/kali/escalate python -cprint\ “A”\*408
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 231018) exited normally]
+(gdb) q
+                                                                                                             
+┌──(root㉿kali)-[/home/kali]
+└─# gdb ./escalate                                   
+GNU gdb (Debian 13.2-1) 13.2
+Copyright (C) 2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./escalate...
+(No debugging symbols found in ./escalate)
+(gdb) run < <(python -c 'print("A")')
+Starting program: /home/kali/escalate < <(python -c 'print("A")')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0xf7cab728 in ?? () from /lib32/libc.so.6
+(gdb) disas main
+Dump of assembler code for function main:
+   0x565561be <+0>:     lea    0x4(%esp),%ecx
+   0x565561c2 <+4>:     and    $0xfffffff0,%esp
+   0x565561c5 <+7>:     push   -0x4(%ecx)
+   0x565561c8 <+10>:    push   %ebp
+   0x565561c9 <+11>:    mov    %esp,%ebp
+   0x565561cb <+13>:    push   %ecx
+   0x565561cc <+14>:    sub    $0x4,%esp
+   0x565561cf <+17>:    call   0x565561fc <__x86.get_pc_thunk.ax>
+   0x565561d4 <+22>:    add    $0x2e20,%eax
+   0x565561d9 <+27>:    mov    %ecx,%eax
+   0x565561db <+29>:    mov    0x4(%eax),%eax
+   0x565561de <+32>:    add    $0x4,%eax
+   0x565561e1 <+35>:    mov    (%eax),%eax
+   0x565561e3 <+37>:    sub    $0xc,%esp
+   0x565561e6 <+40>:    push   %eax
+   0x565561e7 <+41>:    call   0x5655618d <vulnerable>
+   0x565561ec <+46>:    add    $0x10,%esp
+   0x565561ef <+49>:    mov    $0x0,%eax
+   0x565561f4 <+54>:    mov    -0x4(%ebp),%ecx
+   0x565561f7 <+57>:    leave
+   0x565561f8 <+58>:    lea    -0x4(%ecx),%esp
+   0x565561fb <+61>:    ret
+End of assembler dump.
+(gdb) run < <($python -c 'print("A")')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate < <($python -c 'print("A")')
+zsh:1: command not found: -c
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0xf7cab728 in ?? () from /lib32/libc.so.6
+(gdb) run $(python -c 'print("A")')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate $(python -c 'print("A")')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 233875) exited normally]
+(gdb) run $(python -c 'print("A"*400)')
+Starting program: /home/kali/escalate $(python -c 'print("A"*400)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Inferior 1 (process 234277) exited normally]
+(gdb) run $(python -c 'print("A"*408)')
+Starting program: /home/kali/escalate $(python -c 'print("A"*408)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x565561fb in main ()
+(gdb) disas main
+Dump of assembler code for function main:
+   0x565561be <+0>:     lea    0x4(%esp),%ecx
+   0x565561c2 <+4>:     and    $0xfffffff0,%esp
+   0x565561c5 <+7>:     push   -0x4(%ecx)
+   0x565561c8 <+10>:    push   %ebp
+   0x565561c9 <+11>:    mov    %esp,%ebp
+   0x565561cb <+13>:    push   %ecx
+   0x565561cc <+14>:    sub    $0x4,%esp
+   0x565561cf <+17>:    call   0x565561fc <__x86.get_pc_thunk.ax>
+   0x565561d4 <+22>:    add    $0x2e20,%eax
+   0x565561d9 <+27>:    mov    %ecx,%eax
+   0x565561db <+29>:    mov    0x4(%eax),%eax
+   0x565561de <+32>:    add    $0x4,%eax
+   0x565561e1 <+35>:    mov    (%eax),%eax
+   0x565561e3 <+37>:    sub    $0xc,%esp
+   0x565561e6 <+40>:    push   %eax
+   0x565561e7 <+41>:    call   0x5655618d <vulnerable>
+   0x565561ec <+46>:    add    $0x10,%esp
+   0x565561ef <+49>:    mov    $0x0,%eax
+   0x565561f4 <+54>:    mov    -0x4(%ebp),%ecx
+   0x565561f7 <+57>:    leave
+   0x565561f8 <+58>:    lea    -0x4(%ecx),%esp
+=> 0x565561fb <+61>:    ret
+End of assembler dump.
+(gdb) disas vulnerable
+Dump of assembler code for function vulnerable:
+   0x5655618d <+0>:     push   %ebp
+   0x5655618e <+1>:     mov    %esp,%ebp
+   0x56556190 <+3>:     push   %ebx
+   0x56556191 <+4>:     sub    $0x194,%esp
+   0x56556197 <+10>:    call   0x565561fc <__x86.get_pc_thunk.ax>
+   0x5655619c <+15>:    add    $0x2e58,%eax
+   0x565561a1 <+20>:    sub    $0x8,%esp
+   0x565561a4 <+23>:    push   0x8(%ebp)
+   0x565561a7 <+26>:    lea    -0x198(%ebp),%edx
+   0x565561ad <+32>:    push   %edx
+   0x565561ae <+33>:    mov    %eax,%ebx
+   0x565561b0 <+35>:    call   0x56556040 <strcpy@plt>
+   0x565561b5 <+40>:    add    $0x10,%esp
+   0x565561b8 <+43>:    nop
+   0x565561b9 <+44>:    mov    -0x4(%ebp),%ebx
+   0x565561bc <+47>:    leave
+   0x565561bd <+48>:    ret
+End of assembler dump.
+(gdb) b * 0x565561b0
+Breakpoint 1 at 0x565561b0
+(gdb) b *0x565561bc
+Breakpoint 2 at 0x565561bc
+(gdb) run $(python -c 'print("A"*408)')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate $(python -c 'print("A"*408)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x565561b0 in vulnerable ()
+(gdb) info reg
+eax            0x56558ff4          1448447988
+ecx            0xffffce40          -12736
+edx            0xffffcc70          -13200
+ebx            0x56558ff4          1448447988
+esp            0xffffcc60          0xffffcc60
+ebp            0xffffce08          0xffffce08
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x565561b0          0x565561b0 <vulnerable+35>
+eflags         0x292               [ AF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) x/32 $esp
+0xffffcc60:     -13200  -12047  0       1448436124
+0xffffcc70:     0       1       -5044   25
+0xffffcc80:     -134230028      -13032  2048    2112
+0xffffcc90:     -134230028      -134400268      -134436527      -138284499
+0xffffcca0:     25      -13016  -134336944      -13024
+0xffffccb0:     -13016  -134230028      -13024  26476544
+0xffffccc0:     2048    -134228504      -134437860      -134437872
+0xffffccd0:     3167716 -134399303      1       1
+(gdb) x/32z $esp
+0xffffcc60:     0xffffcc70      0xffffd0f1      0x00000000      0x5655619c
+0xffffcc70:     0x00000000      0x00000001      0xffffec4c      0x00000019
+0xffffcc80:     0xf7ffcff4      0xffffcd18      0x00000800      0x00000840
+0xffffcc90:     0xf7ffcff4      0xf7fd36f4      0xf7fca951      0xf7c1f22d
+0xffffcca0:     0x00000019      0xffffcd28      0xf7fe2e50      0xffffcd20
+0xffffccb0:     0xffffcd28      0xf7ffcff4      0xffffcd20      0x01940000
+0xffffccc0:     0x00000800      0xf7ffd5e8      0xf7fca41c      0xf7fca410
+0xffffccd0:     0x003055e4      0xf7fd3ab9      0x00000001      0x00000001
+(gdb) 
+0xffffcce0:     0xf7fca67c      0x00000026      0xf7fca6ac      0xf7ffd5e8
+0xffffccf0:     0xffffcd54      0xffffcd50      0x00000000      0x0000000c
+0xffffcd00:     0x00000006      0x00000003      0x00000000      0xf7fca41c
+0xffffcd10:     0xf7ffcff4      0xf7fca6ac      0xf7c1c9a2      0xf7fca67c
+0xffffcd20:     0x003055e4      0xf7ffd5e8      0x00000004      0xffffcde0
+0xffffcd30:     0xffffcd54      0xf7fc26f0      0x00000000      0xf7fc8570
+0xffffcd40:     0xf7ffcff4      0x00000003      0x00000000      0xf7c09900
+0xffffcd50:     0x00000000      0x00000000      0x565552a3      0xf7c11150
+(gdb) 
+0xffffcd60:     0xf63d4e2e      0x003055e4      0xf7fc25d8      0xffffcde0
+0xffffcd70:     0xffffcde4      0xf7fd427e      0xf7c09a30      0xffffcde4
+0xffffcd80:     0xf7ffdb9c      0x00000002      0xf7fc2ac0      0x00000001
+0xffffcd90:     0x00000000      0x00000001      0xf7fc2400      0x00000000
+0xffffcda0:     0x00000000      0xf63d4e2e      0xf7ffdc08      0xffffce20
+0xffffcdb0:     0xf7ffcff4      0x0000000c      0x00000000      0xffffce24
+0xffffcdc0:     0xf7ffdb9c      0x00000001      0xf7fc2720      0x00000001
+0xffffcdd0:     0x00000000      0x00000001      0xf7ffda30      0x0000001c
+(gdb) 
+0xffffcde0:     0xffffffff      0xf7fca67c      0xf7ffd5e8      0xffffdfe4
+0xffffcdf0:     0xf7ffcff4      0x0000000c      0x00000000      0x00000000
+0xffffce00:     0x00000000      0xf7e1dff4      0xffffce28      0x565561ec
+0xffffce10:     0xffffd0f1      0xf7fd9d41      0xf7c1c9a2      0x565561d4
+0xffffce20:     0xffffce50      0xffffce40      0x00000000      0xf7c237c5
+0xffffce30:     0x00000001      0x00000000      0x00000078      0xf7c237c5
+0xffffce40:     0x00000002      0xffffcef4      0xffffcf00      0xffffce60
+0xffffce50:     0xf7e1dff4      0x565561be      0x00000002      0xffffcef4
+(gdb) 
+0xffffce60:     0xf7e1dff4      0x56558eec      0xf7ffcba0      0x00000000
+0xffffce70:     0x46cec83b      0x3d3d422b      0x00000000      0x00000000
+0xffffce80:     0x00000000      0xf7ffcba0      0x00000000      0xb4e78e00
+0xffffce90:     0xf7ffda30      0xf7c23756      0xf7e1dff4      0xf7c23888
+0xffffcea0:     0xf7fcaac4      0x56558eec      0x00000000      0xf7ffd000
+0xffffceb0:     0x00000000      0xf7fdbd60      0xf7c23809      0x56558ff4
+0xffffcec0:     0x00000002      0x56556060      0x00000000      0x56556087
+0xffffced0:     0x565561be      0x00000002      0xffffcef4      0x00000000
+(gdb) 
+0xffffcee0:     0x00000000      0xf7fced50      0xffffceec      0xf7ffda30
+0xffffcef0:     0x00000002      0xffffd0dd      0xffffd0f1      0x00000000
+0xffffcf00:     0xffffd28a      0xffffd299      0xffffd2ad      0xffffd2d0
+0xffffcf10:     0xffffd306      0xffffd327      0xffffd334      0xffffd352
+0xffffcf20:     0xffffd36e      0xffffd38a      0xffffd395      0xffffd3a6
+0xffffcf30:     0xffffd3b0      0xffffd3bd      0xffffd3dc      0xffffd43a
+0xffffcf40:     0xffffd458      0xffffd473      0xffffd482      0xffffd495
+0xffffcf50:     0xffffd4b3      0xffffd4ce      0xffffd51c      0xffffd52f
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x565561bc in vulnerable ()
+(gdb) x/32z $esp
+0xffffcc70:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcc80:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcc90:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcca0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffccb0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffccc0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffccd0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcce0:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffccf0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd00:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd10:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd20:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd30:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd40:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd50:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd60:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffcd70:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd80:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd90:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcda0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcdb0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcdc0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcdd0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcde0:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffcdf0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffce00:     0x41414141      0x41414141      0xffffce00      0x565561ec
+0xffffce10:     0xffffd0f1      0xf7fd9d41      0xf7c1c9a2      0x565561d4
+0xffffce20:     0xffffce50      0xffffce40      0x00000000      0xf7c237c5
+0xffffce30:     0x00000001      0x00000000      0x00000078      0xf7c237c5
+0xffffce40:     0x00000002      0xffffcef4      0xffffcf00      0xffffce60
+0xffffce50:     0xf7e1dff4      0x565561be      0x00000002      0xffffcef4
+0xffffce60:     0xf7e1dff4      0x56558eec      0xf7ffcba0      0x00000000
+(gdb) 
+0xffffce70:     0x46cec83b      0x3d3d422b      0x00000000      0x00000000
+0xffffce80:     0x00000000      0xf7ffcba0      0x00000000      0xb4e78e00
+0xffffce90:     0xf7ffda30      0xf7c23756      0xf7e1dff4      0xf7c23888
+0xffffcea0:     0xf7fcaac4      0x56558eec      0x00000000      0xf7ffd000
+0xffffceb0:     0x00000000      0xf7fdbd60      0xf7c23809      0x56558ff4
+0xffffcec0:     0x00000002      0x56556060      0x00000000      0x56556087
+0xffffced0:     0x565561be      0x00000002      0xffffcef4      0x00000000
+0xffffcee0:     0x00000000      0xf7fced50      0xffffceec      0xf7ffda30
+(gdb) 
+0xffffcef0:     0x00000002      0xffffd0dd      0xffffd0f1      0x00000000
+0xffffcf00:     0xffffd28a      0xffffd299      0xffffd2ad      0xffffd2d0
+0xffffcf10:     0xffffd306      0xffffd327      0xffffd334      0xffffd352
+0xffffcf20:     0xffffd36e      0xffffd38a      0xffffd395      0xffffd3a6
+0xffffcf30:     0xffffd3b0      0xffffd3bd      0xffffd3dc      0xffffd43a
+0xffffcf40:     0xffffd458      0xffffd473      0xffffd482      0xffffd495
+0xffffcf50:     0xffffd4b3      0xffffd4ce      0xffffd51c      0xffffd52f
+0xffffcf60:     0xffffd542      0xffffd571      0xffffd585      0xffffd58f
+(gdb) 
+0xffffcf70:     0xffffd59a      0xffffd5bc      0xffffd5d5      0xffffd5ee
+0xffffcf80:     0xffffd636      0xffffd666      0xffffd67c      0xffffd69b
+0xffffcf90:     0xffffd6aa      0xffffd6de      0xffffd6f5      0xffffd71a
+0xffffcfa0:     0xffffd72b      0xffffd765      0xffffd77a      0xffffd785
+0xffffcfb0:     0xffffd7c8      0xffffd7d0      0xffffd7e2      0xffffdf05
+0xffffcfc0:     0xffffdf1d      0xffffdf35      0xffffdf4a      0xffffdf63
+0xffffcfd0:     0xffffdf78      0xffffdf90      0xffffdfa5      0xffffdfbb
+0xffffcfe0:     0xffffdfcf      0xffffdfd8      0x00000000      0x00000020
+(gdb) 
+0xffffcff0:     0xf7fc8570      0x00000021      0xf7fc8000      0x00000033
+0xffffd000:     0x000006f0      0x00000010      0x1f8bfbff      0x00000006
+0xffffd010:     0x00001000      0x00000011      0x00000064      0x00000003
+0xffffd020:     0x56555034      0x00000004      0x00000020      0x00000005
+0xffffd030:     0x0000000b      0x00000007      0xf7fca000      0x00000008
+0xffffd040:     0x00000000      0x00000009      0x56556060      0x0000000b
+0xffffd050:     0x00000000      0x0000000c      0x00000000      0x0000000d
+0xffffd060:     0x00000000      0x0000000e      0x00000000      0x00000017
+(gdb) 
+0xffffd070:     0x00000000      0x00000019      0xffffd0bb      0x0000001a
+0xffffd080:     0x00000002      0x0000001f      0xffffdfe4      0x0000000f
+0xffffd090:     0xffffd0cb      0x0000001b      0x0000001c      0x0000001c
+0xffffd0a0:     0x00000020      0x00000000      0x00000000      0x00000000
+0xffffd0b0:     0x00000000      0x00000000      0x7b000000      0x24b4e78e
+0xffffd0c0:     0x06e25ca9      0xa45afe2d      0x690064ee      0x00363836
+0xffffd0d0:     0x00000000      0x00000000      0x00000000      0x6f682f00
+0xffffd0e0:     0x6b2f656d      0x2f696c61      0x61637365      0x6574616c
+(gdb) 
+0xffffd0f0:     0x41414100      0x41414141      0x41414141      0x41414141
+0xffffd100:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd110:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd120:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd130:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd140:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd150:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd160:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffd170:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd180:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd190:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd1a0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd1b0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd1c0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd1d0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd1e0:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffd1f0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd200:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd210:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd220:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd230:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd240:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd250:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffd260:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) info reg
+eax            0xffffcc70          -13200
+ecx            0xffffd280          -11648
+edx            0xffffcdff          -12801
+ebx            0x41414141          1094795585
+esp            0xffffcc70          0xffffcc70
+ebp            0xffffce08          0xffffce08
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x565561bc          0x565561bc <vulnerable+47>
+eflags         0x282               [ SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) run $(python -c 'print("A"*408+"BCDE")')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/kali/escalate $(python -c 'print("A"*408+"BCDE")')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x565561b0 in vulnerable ()
+(gdb) info reg
+eax            0x56558ff4          1448447988
+ecx            0xffffce40          -12736
+edx            0xffffcc70          -13200
+ebx            0x56558ff4          1448447988
+esp            0xffffcc60          0xffffcc60
+ebp            0xffffce08          0xffffce08
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x565561b0          0x565561b0 <vulnerable+35>
+eflags         0x292               [ AF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x565561bc in vulnerable ()
+(gdb) x/32z $esp
+0xffffcc70:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcc80:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcc90:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcca0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffccb0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffccc0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffccd0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcce0:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffccf0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd00:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd10:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd20:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd30:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd40:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd50:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd60:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffcd70:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd80:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcd90:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcda0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcdb0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcdc0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcdd0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffcde0:     0x41414141      0x41414141      0x41414141      0x41414141
+(gdb) 
+0xffffcdf0:     0x41414141      0x41414141      0x41414141      0x41414141
+0xffffce00:     0x41414141      0x41414141      0x45444342      0x56556100
+0xffffce10:     0xffffd0ed      0xf7fd9d41      0xf7c1c9a2      0x565561d4
+0xffffce20:     0xffffce50      0xffffce40      0x00000000      0xf7c237c5
+0xffffce30:     0x00000001      0x00000000      0x00000078      0xf7c237c5
+0xffffce40:     0x00000002      0xffffcef4      0xffffcf00      0xffffce60
+0xffffce50:     0xf7e1dff4      0x565561be      0x00000002      0xffffcef4
+0xffffce60:     0xf7e1dff4      0x56558eec      0xf7ffcba0      0x00000000
+(gdb) info reg
+eax            0xffffcc70          -13200
+ecx            0xffffd280          -11648
+edx            0xffffce03          -12797
+ebx            0x41414141          1094795585
+esp            0xffffcc70          0xffffcc70
+ebp            0xffffce08          0xffffce08
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x565561bc          0x565561bc <vulnerable+47>
+eflags         0x282               [ SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x41414141 in ?? ()
+(gdb) info reg
+eax            0xfffff98e          -1650
+ecx            0xffffd280          -11648
+edx            0x41414141          1094795585
+ebx            0xfffff31c          -3300
+esp            0xffffcdfc          0xffffcdfc
+ebp            0x45444342          0x45444342
+esi            0x56558eec          1448447724
+edi            0xf7ffcba0          -134231136
+eip            0x41414141          0x41414141
+eflags         0x10292             [ AF SF IF RF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+(gdb) c
+The program is not being run.
+(gdb) run $(python -c 'print("A"*408)')
+Starting program: /home/kali/escalate $(python -c 'print("A"*408)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x565561b0 in vulnerable ()
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x565561bc in vulnerable ()
+(gdb) Quit
+(gdb) 

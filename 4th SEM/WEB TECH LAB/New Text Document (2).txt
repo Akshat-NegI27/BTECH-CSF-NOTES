@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Of Petroleum and Health Sciences
+  
+    color:white;"}
+    </title>
+</head>
+<body>
+<img src="https://www.upes.ac.in/assets/images/UPES-logo.svg" style="position:absolute; left:530px; top:10px;" height="40" width="140">
+    <header>
+        <h1><br>University Of Petroleum and Health Sciences</br></h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#programs">Programs</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#admissions">Admissions</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+<div>
+
+<style>
+  {
+  s('https://e0.pxfuel.com/wallpapers/699/539/desktop-wallpaper-white-blank-page-snow-white-white-screen.jpg');
+  }
+  </style>
+  <style>
+body 
+{
+  background-image: url('https://international.upes.ac.in/media/gqbloh1h/about-upes.jpg');
+}
+</style>
+  </div> 
+
+    <section id="home">
+        <h2>Welcome to UPES</h2>
+        <p>Explore the world of knowledge with us.</p>
+    </section>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>Provide information about the history, mission, and values of the university.</p>
+    </section>
+
+    <section id="programs">
+        <h2>Programs</h2>
+        <p>Highlight the academic programs offered by the university.</p>
+    </section>
+    
+        <section id="gallery">
+        <h2>Gallery</h2>
+        <p>Highlight the academic programs offered by the university.</p>
+    </section>
+
+    <section id="admissions">
+        <h2>Admissions</h2>
+        <p>Include details about the admission process, requirements, and important dates.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>Include contact information and a form for inquiries.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 UPES. All rights reserved.</p>
+    </footer>
+   
+</body>
+</html>

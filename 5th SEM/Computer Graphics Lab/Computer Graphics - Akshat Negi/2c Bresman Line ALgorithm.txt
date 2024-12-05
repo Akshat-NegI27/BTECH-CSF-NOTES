@@ -1,0 +1,108 @@
+#include <GL/freeglut.h>
+#include <stdio.h> 
+
+// Function to set pixel at (x, y)
+void setPixel(int x, int y) 
+{
+    glBegin(GL_POINTS);
+    glVertex2i(x, y);
+    glEnd();
+    glFlush();
+} 
+
+// Bresenham's algorithm for slope |m| < 1 (dy < dx)
+void bresenhamLineLow(int x1, int y1, int x2, int y2) 
+{
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    int D = 2 * dy - dx;
+    int y = y1;
+    for (int x = x1; x <= x2; x++) 
+    {
+        setPixel(x, y);
+        if (D > 0) 
+        {
+            y += (y2 > y1) ? 1 : -1;  // Increase/decrease y depending on the slope direction
+            D = D + (2 * (dy - dx));
+        }
+        else 
+        {
+            D = D + 2 * dy;
+        }
+    }
+}
+
+// Bresenham's algorithm for slope |m| > 1 (dy > dx)
+void bresenhamLineHigh(int x1, int y1, int x2, int y2) 
+{
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    int D = 2 * dx - dy;
+    int x = x1;
+    for (int y = y1; y <= y2; y++) 
+    {
+        setPixel(x, y);
+        if (D > 0) 
+        {
+            x += (x2 > x1) ? 1 : -1;  // Increase/decrease x depending on the slope direction
+            D = D + (2 * (dx - dy));
+        }
+        else 
+        {
+            D = D + 2 * dx;
+        }
+    }
+} 
+
+// Main function that checks the slope and calls the appropriate function
+void drawLine(int x1, int y1, int x2, int y2) 
+{
+    if (abs(y2 - y1) < abs(x2 - x1)) 
+    {
+        if (x1 > x2) {
+            bresenhamLineLow(x2, y2, x1, y1);  // Line from (x2, y2) to (x1, y1)
+        }
+        else {
+            bresenhamLineLow(x1, y1, x2, y2);  // Line from (x1, y1) to (x2, y2)
+        }
+    }
+    else {
+        if (y1 > y2) {
+            bresenhamLineHigh(x2, y2, x1, y1); // Line from (x2, y2) to (x1, y1)
+        }
+        else {
+            bresenhamLineHigh(x1, y1, x2, y2); // Line from (x1, y1) to (x2, y2)
+        }
+    }
+} 
+
+// User input handling and initialization
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    int x1, y1, x2, y2;
+    printf("Enter coordinates of the starting point (x1, y1): ");
+    scanf_s("%d %d", &x1, &y1);
+    printf("Enter coordinates of the end point (x2, y2): ");
+    scanf_s("%d %d", &x2, &y2);
+    drawLine(x1, y1, x2, y2);
+}
+void init() 
+{
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glColor3f(0.0, 0.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, 500, 0, 500);
+}
+
+int main(int argc, char** argv) 
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(500, 250);
+    glutCreateWindow("Bresenham's Line Algorithm!");
+    init();
+    glutDisplayFunc(display);
+    glutMainLoop();
+}

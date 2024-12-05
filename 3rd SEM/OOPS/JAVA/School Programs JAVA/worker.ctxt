@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.target=worker
+comment1.params=na\ ba
+comment1.target=worker(java.lang.String,\ double)
+comment2.params=
+comment2.target=void\ display()
+numComments=3

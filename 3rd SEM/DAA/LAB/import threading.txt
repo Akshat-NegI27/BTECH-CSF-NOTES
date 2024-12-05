@@ -1,0 +1,42 @@
+import threading
+import time
+from multiprocessing import Process, Semaphore
+​
+# Create a semaphore with an initial value of 1
+semaphore = Semaphore(1)
+​
+# Create a shared variable
+shared_variable = 0
+​
+def increment_shared_variable():
+    # Acquire the semaphore
+    semaphore.acquire()
+​
+    # Increment the shared variable
+    global shared_variable
+    shared_variable += 1
+​
+    # Release the semaphore
+    semaphore.release()
+​
+def print_shared_variable():
+    # Acquire the semaphore
+    semaphore.acquire()
+​
+    # Print the shared variable
+    print(shared_variable)
+​
+    # Release the semaphore
+    semaphore.release()
+​
+# Create two processes
+process1 = Process(target=increment_shared_variable)
+process2 = Process(target=print_shared_variable)
+​
+# Start the processes
+process1.start()
+process2.start()
+​
+# Wait for the processes to finish
+process1.join()
+process2.join()

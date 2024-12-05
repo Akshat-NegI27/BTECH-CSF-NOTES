@@ -1,0 +1,13 @@
+Cookie Stealing and Session Replay
+
+- Demonstrate cookie stealing and replay on following 
+
+1. DVWA (low and high)
+
+2. https://demo.testfire.net/
+
+3. login page (vulnweb.com)
+
+4. Make a report 
+
+Bonus: Try on any other site

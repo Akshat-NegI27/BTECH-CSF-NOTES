@@ -1,0 +1,82 @@
+#include <GL/freeglut.h>
+#include <iostream>
+#include <cmath>
+
+float fillColor[3] = { 1.0, 0.0, 0.0 };  // Red color for filling
+float borderColor[3] = { 0.0, 0.0, 0.0 }; // Black color for the boundary
+float epsilon = 0.001;  // Tolerance for color comparison
+
+// Function to set a pixel with a specific color
+void setPixel(int x, int y, float* color) {
+    glColor3fv(color);
+    glBegin(GL_POINTS);
+    glVertex2i(x, y);
+    glEnd();
+    glFlush();
+}
+
+// Function to get the color of a pixel at coordinates (x, y)
+void getPixelColor(int x, int y, float* color) {
+    glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, color);
+}
+
+// Helper function to compare two colors with a tolerance
+bool isSameColor(float* color1, float* color2) {
+    return (fabs(color1[0] - color2[0]) < epsilon &&
+            fabs(color1[1] - color2[1]) < epsilon &&
+            fabs(color1[2] - color2[2]) < epsilon);
+}
+
+// 4-Connected Flood Fill Algorithm
+void floodFill(int x, int y, float* fillColor, float* boundaryColor) {
+    float currentColor[3];
+    getPixelColor(x, y, currentColor);
+
+    // If the pixel is neither the boundary nor the fill color, fill it
+    if (!isSameColor(currentColor, boundaryColor) && !isSameColor(currentColor, fillColor)) {
+        setPixel(x, y, fillColor);
+
+        // 4-connected neighbors
+        floodFill(x + 1, y, fillColor, boundaryColor); // Right
+        floodFill(x - 1, y, fillColor, boundaryColor); // Left
+        floodFill(x, y + 1, fillColor, boundaryColor); // Up
+        floodFill(x, y - 1, fillColor, boundaryColor); // Down
+    }
+}
+
+// Function to draw a smaller triangle
+void drawTriangle() {
+    glColor3fv(borderColor); // Set border color (black)
+    glBegin(GL_LINE_LOOP);
+    glVertex2i(120, 150); // Top vertex
+    glVertex2i(100, 100); // Bottom-left vertex
+    glVertex2i(140, 100); // Bottom-right vertex
+    glEnd();
+    glFlush();
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawTriangle();  // Draw triangle on screen
+
+    // Starting the flood fill from a point inside the triangle
+    floodFill(120, 120, fillColor, borderColor);
+}
+
+void init() {
+    glClearColor(1.0, 1.0, 1.0, 1.0); // Set background color to white
+    glColor3f(0.0, 0.0, 0.0);         // Set drawing color to black
+    gluOrtho2D(0, 300, 0, 300);       // Set the coordinate system for the window
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(300, 300);    // Decrease window size
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("Flood Fill - 4 Connected Triangle - Akshat Negi");
+    init();
+    glutDisplayFunc(display);
+    glutMainLoop();
+    return 0;
+}

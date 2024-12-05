@@ -1,0 +1,67 @@
+100 150 
+200 300
+300 100
+400 350
+
+
+#include <GL/freeglut.h>
+#include <vector>
+#include <iostream>
+#include <cmath>
+
+struct Point {
+    float x, y;
+};
+
+// Define a vector to store control points for the cubic spline
+std::vector<Point> controlPoints(4);
+
+// Function to interpolate points for a cubic spline
+Point cubicSpline(float t, Point p0, Point p1, Point p2, Point p3) {
+    float a = (1 - t) * (1 - t) * (1 - t);
+    float b = 3 * t * (1 - t) * (1 - t);
+    float c = 3 * t * t * (1 - t);
+    float d = t * t * t;
+
+    return {
+        a * p0.x + b * p1.x + c * p2.x + d * p3.x,
+        a * p0.y + b * p1.y + c * p2.y + d * p3.y
+    };
+}
+
+// Function to render the cubic spline
+void renderSpline() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1.0, 0.0, 0.0); // Red color for the spline
+    glBegin(GL_LINE_STRIP);
+
+    for (float t = 0; t <= 1; t += 0.01) {
+        Point p = cubicSpline(t, controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3]);
+        glVertex2f(p.x, p.y);
+    }
+
+    glEnd();
+    glFlush();
+}
+
+void init() {
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glOrtho(0.0, 500.0, 0.0, 500.0, -1.0, 1.0);
+}
+
+int main(int argc, char** argv) {
+    std::cout << "Enter 4 control points for the cubic spline (x y):\n";
+    for (int i = 0; i < 4; ++i) {
+        std::cout << "Point " << i + 1 << ": ";
+        std::cin >> controlPoints[i].x >> controlPoints[i].y;
+    }
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(500, 500);
+    glutCreateWindow("Cubic Spline - Akshat Negi");
+    init();
+    glutDisplayFunc(renderSpline);
+    glutMainLoop();
+    return 0;
+}

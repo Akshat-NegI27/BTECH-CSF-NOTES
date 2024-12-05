@@ -1,0 +1,73 @@
+Experiment-1
+
+Objective 1: show step by step proess and jdk and set path variable
+Objective 2: Write about five popular java IDE's 
+Objective 3: Write and excute our first java program that prints username
+
+
+
+Experiment-2 
+Study a JAVA control statement (if, else, loops, etc.) and perform the following tasks. 
+Objective 1: WAP to print Fibonacci series up to 10 numbers 
+Objective 2: WAP to find the sum of all integers greater than 40 less than 250 that are divisible by 5 
+Objective 3: WAP calculate and display Simple interest for a given principal amount, rate of interest and time 
+Objective 4: WAP that calculates and displays the sum of even and odd digits separately for a given positive integer. 
+Objective 5: WAP that prints the following pyramid patters using following asterias 
+
+                     * 
+
+                   *  * 
+
+                 *  *  * 
+
+               *  *   *  * 
+
+             *  *   *  *   *
+            
+            
+            
+            
+Experiment-3
+1.	Write a program to take input (a number) of a month (1 - 12) and print its equivalent name of the month. ( e.g 1 to Jan, 2 to Feb. 12 to Dec.) Use Scanner class for user input( Hint-use switch case)
+2.	Write a program to add two numbers using command line arguments.
+3.	Write a program to implement a command line calculator.
+4.	Write a program that takes students’ info from the user (using Scanner class) and displays output on a black screen. 
+5.	Write a Java program that takes input about customers from the user, and then displays the collected data on a console interface.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXP 4*for B2*
+Title: Class, Objects, Methods, and Constructors
+1.	Write a JAVA program to implement the class mechanism. – Create a class, define data members, and methods (setData(args),getData()), and invoke them inside the main method.
+2.	Write software to prepare the results of the students for school examinations. The Roll no of the students and their marks in subjects of Physics, Chemistry, and Math are supplied through the Scanner class. The result of the subject is prepared and displayed on the output screen by finding the students who fail and pass the exam. If the marks are below 40% in the subject, then the student has failed in the subject. If the student passes and the aggregate score is above 75% then he scores Distinction. If the student passes and aggregate marks are 60%,50%, and 40% then he scores First, Second, and Third Division. Mention all the cases in output.
+3.	Write a JAVA program to implement compile time polymorphism.
+4.	Write a JAVA program to implement type promotion in method overloading.
+5.	Write a JAVA program to implement constructor overloading.
+
+
+
+
+
+for B2
+Experiment 5
+TITLE Inheritance
+1.	Write a Java program to show that a private member of a super class cannot be accessed from derived classes. 
+2.	Write a program in Java to create a Player class. Inherit the classes  Cricket Player, Football _Player, and Hockey Player from Player class. 
+3.	Write a class Worker and derive classes DailyWorker and SalariedWorker from it. Every worker has a name and a salary rate. Write the method ComPay (int hours) to compute the weekly pay of every worker. A Daily Worker is paid on the basis of the number of days he/she works. The Salaried Worker gets paid the wage for 40 hours a week no matter what the actual hours are. Test this program to calculate the pay of workers. You are expected to use the concept of polymorphism to write this program.
+4.	Design a class employee of an organization. An employee has a name, empid, and salary. Write the default constructor, a constructor with parameters (name, empid, and salary) and methods to return name and salary. Also, write a method increaseSalary that raises the employee’s salary by a certain user-specified percentage. Derive a subclass Manager from the employee. Supply a test program that uses these classes and methods.
+
+
+
+

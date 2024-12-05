@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Perimeter
+comment1.params=aa\ bb
+comment1.target=Perimeter(double,\ double)
+comment2.params=
+comment2.target=double\ calculate()
+comment3.params=
+comment3.target=void\ show()
+numComments=4

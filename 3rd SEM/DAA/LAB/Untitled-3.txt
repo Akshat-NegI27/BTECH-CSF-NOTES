@@ -1,0 +1,140 @@
+#include <stdio.h>
+#include <stdlib.h>
+// Define the number of processes and resources
+#define NUM_PROCESSES 5
+#define NUM_RESOURCES 3
+// Define the maximum number of instances of each resource
+int max_resources[NUM_RESOURCES];
+// Define the current number of instances of each resource
+int current_resources[NUM_RESOURCES];
+// Define the maximum number of instances of each resource that each process can request
+int max_requests[NUM_PROCESSES][NUM_RESOURCES];
+// Define the current number of instances of each resource that each process has requested
+int current_requests[NUM_PROCESSES][NUM_RESOURCES];
+// Define the allocation matrix
+int allocation_matrix[NUM_PROCESSES][NUM_RESOURCES];
+// Define the need matrix
+int need_matrix[NUM_PROCESSES][NUM_RESOURCES];
+// Initialize the maximum number of instances of each resource
+void init_max_resources() {
+    for (int i = 0; i < NUM_RESOURCES; i++) 
+    {
+        max_resources[i] = rand() % 10;
+    }
+}
+// Initialize the current number of instances of each resource
+void init_current_resources() {
+    for (int i = 0; i < NUM_RESOURCES; i++) {
+        current_resources[i] = rand() % 10;
+    }
+}
+// Initialize the maximum number of instances of each resource that each process can request
+void init_max_requests() {
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        for (int j = 0; j < NUM_RESOURCES; j++) {
+            max_requests[i][j] = rand() % 10;
+        }
+    }
+}
+// Initialize the current number of instances of each resource that each process has requested
+void init_current_requests() {
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        for (int j = 0; j < NUM_RESOURCES; j++) {
+            current_requests[i][j] = rand() % 10;
+        }
+    }
+}
+// Initialize the allocation matrix
+void init_allocation_matrix() {
+    for (int i =  0; i < NUM_PROCESSES; i++) 
+    {
+        for (int j = 0; j < NUM_RESOURCES; j++) 
+        {
+            allocation_matrix[i][j] = 0;
+        }
+    }
+}
+// Initialize the need matrix
+void init_need_matrix() {
+    for (int i = 0; i < NUM_PROCESSES; i++)
+    {
+        for (int j = 0; j < NUM_RESOURCES; j++) 
+        {
+            need_matrix[i][j] = max_requests[i][j] - allocation_matrix[i][j];
+        }
+    }
+}
+// Check if a process can be granted its request
+int can_grant_request(int process_id) {
+    for (int i = 0; i < NUM_RESOURCES; i++) 
+    {
+        if (current_resources[i] < need_matrix[process_id][i]) 
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+// Grant a process its request
+void grant_request(int process_id)
+{
+    for (int i = 0; i < NUM_RESOURCES; i++) 
+    {
+        allocation_matrix[process_id][i] += current_requests[process_id][i];
+        need_matrix[process_id][i] -= current_requests[process_id][i];
+        current_resources[i] -= current_requests[process_id][i];
+    }
+}
+// Check if the system is in a safe state
+int is_safe_state() {
+    int finished[NUM_PROCESSES];
+    for (int i = 0; i < NUM_PROCESSES; i++) 
+    {
+        finished[i] = 0;
+    }
+    int work[NUM_RESOURCES];
+    for (int i = 0; i < NUM_RESOURCES; i++) {
+        work[i] = current_resources[i];
+    }
+    while (1) {
+        int found = 0;
+        for (int i = 0; i < NUM_PROCESSES; i++) {
+            if (!finished[i] && can_grant_request(i)) {
+                found = 1;
+                grant_request(i );
+                finished[i] = 1;
+                break;
+            }
+        }
+        if (!found) {
+            break;
+        }
+    }
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        if (!finished[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+// Main function
+int main() {
+    init_resources();
+    init_max_requests();
+    init_current_requests();
+    init_allocation_matrix();
+    init_need_matrix();
+    while (1) {
+        int process_id = rand() % NUM_PROCESSES;
+        if (can_grant_request(process_id)) {
+            grant_request(process_id);
+        } else {
+            if (is_safe_state()) {
+                printf("The system is in a safe state.\n");
+            } else {
+                printf("The system is not in a safe state.\n");
+            }
+        }
+    }
+    return 0;
+}
